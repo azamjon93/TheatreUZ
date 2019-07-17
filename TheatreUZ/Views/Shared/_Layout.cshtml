@@ -44,7 +44,8 @@
             <p>&copy; @DateTime.Now.Year - THEATRE.UZ</p>
         </footer>
     </div>
-
+    @Scripts.Render("~/Scripts/knockout-3.5.0.js")
+    @Scripts.Render("~/Scripts/Custom/ko.simpleGrid.js")
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)

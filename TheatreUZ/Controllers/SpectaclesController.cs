@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using Newtonsoft.Json;
 using TheatreUZ;
 using TheatreUZ.Models;
 
@@ -19,7 +20,26 @@ namespace TheatreUZ.Controllers
         public ActionResult Index()
         {
             var spectacles = db.Spectacles.Include(s => s.Genre).Include(s => s.State);
-            return View(spectacles.ToList());
+            SpectacleViewModel model = new SpectacleViewModel { Spectacles = spectacles.ToList() };
+
+            return View(model);
+            //return View(spectacles.ToList());
+        }
+        
+        public string All()
+        {
+            var spectacles = db.Spectacles.ToList();
+            //SpectacleViewModel model = new SpectacleViewModel { Spectacles = spectacles.ToList() };
+
+            try
+            {
+                string x = JsonConvert.SerializeObject(spectacles.ToList(), Formatting.None, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+                return x;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
         }
 
         // GET: Spectacles/Details/5

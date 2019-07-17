@@ -1,63 +1,57 @@
-﻿@model IEnumerable<TheatreUZ.Models.Spectacle>
-
+﻿
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Registered spectacles";
 }
 
-<h2>Index</h2>
+@section Scripts
+{
+    <script src="@Url.Content("~/Scripts/Custom/SpectaclesAdmin.js")"></script>
+
+}
+<h2>Registered spectacles</h2>
 
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Genre.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.State.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Cost)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.PlayDate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.RegDate)
-        </th>
-        <th></th>
-    </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Genre.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.State.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Cost)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PlayDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.RegDate)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
-        </td>
-    </tr>
-}
+<form>
+    <div class="input-group input-group-sm">
+        <select data-bind="options: viewModel.genres, optionsText: 'Name', optionsValue: 'ID', optionsCaption: 'Genre...'" />
+        <input type="text" placeholder="Spectacle name..." class="form-control form-control-sm" required />
+        <input type="number" placeholder="Ticket's cost..." class="form-control form-control-sm" required />
+        <input type="datetime-local" name="playdate" class="form-control form-control-sm" required />
+        <button type="submit" class="addBtn">
+            Add
+        </button>
+    </div>
+</form>
 
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Genre</th>
+            <th>State</th>
+            <th>Name</th>
+            <th>Cost</th>
+            <th>Play date</th>
+            <th>Added date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody data-bind="foreach: viewModel.spectacles">
+        <tr>
+            <td data-bind="text: Genre.Name"></td>
+            <td data-bind="text: State.Name"></td>
+            <td data-bind="text: Name"></td>
+            <td data-bind="text: Cost"></td>
+            <td data-bind="text: PlayDate"></td>
+            <td data-bind="text: RegDate"></td>
+            <td>
+                <button class="btn btn-xs btn-danger" data-bind="click: removeItem">
+                    Delete
+                </button>
+            </td>
+        </tr>
+    </tbody>
 </table>
