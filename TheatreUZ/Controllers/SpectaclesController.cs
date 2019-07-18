@@ -16,25 +16,13 @@ namespace TheatreUZ.Controllers
     {
         private TheatreUZContext db = new TheatreUZContext();
 
-        // GET: Spectacles
-        public ActionResult Index()
-        {
-            var spectacles = db.Spectacles.Include(s => s.Genre).Include(s => s.State);
-            SpectacleViewModel model = new SpectacleViewModel { Spectacles = spectacles.ToList() };
-
-            return View(model);
-            //return View(spectacles.ToList());
-        }
-        
-        public string All()
+        public string AllSpectacles()
         {
             var spectacles = db.Spectacles.ToList();
-            //SpectacleViewModel model = new SpectacleViewModel { Spectacles = spectacles.ToList() };
 
             try
             {
-                string x = JsonConvert.SerializeObject(spectacles.ToList(), Formatting.None, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-                return x;
+                return JsonConvert.SerializeObject(spectacles.ToList(), Formatting.None, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }); ;
             }
             catch (Exception ex)
             {
@@ -42,6 +30,13 @@ namespace TheatreUZ.Controllers
             }
         }
 
+        // GET: Spectacles
+        public ActionResult Index()
+        {
+            var spectacles = db.Spectacles.Include(s => s.Genre).Include(s => s.State);
+            return View(spectacles.ToList());
+        }
+        
         // GET: Spectacles/Details/5
         public ActionResult Details(Guid? id)
         {

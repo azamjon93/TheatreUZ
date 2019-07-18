@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
 using Newtonsoft.Json;
-using TheatreUZ;
 using TheatreUZ.Models;
 
 namespace TheatreUZ.Controllers
@@ -22,8 +18,7 @@ namespace TheatreUZ.Controllers
 
             try
             {
-                string x = JsonConvert.SerializeObject(genres.ToList(), Formatting.None, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-                return x;
+                return JsonConvert.SerializeObject(genres.ToList(), Formatting.None, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
             }
             catch (Exception ex)
             {

@@ -11,21 +11,22 @@
 <h2>Registered spectacles</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-sm btn-success", @style="display:block;float:right;margin:10px", @datatoggle = "tooltip", @title = "Қаторни ўчириш" })
 </p>
 
-<form>
-    <div class="input-group input-group-sm">
-        <select data-bind="options: viewModel.genres, optionsText: 'Name', optionsValue: 'ID', optionsCaption: 'Genre...'" />
-        <input type="text" placeholder="Spectacle name..." class="form-control form-control-sm" required />
-        <input type="number" placeholder="Ticket's cost..." class="form-control form-control-sm" required />
-        <input type="datetime-local" name="playdate" class="form-control form-control-sm" required />
-        <button type="submit" class="addBtn">
-            Add
-        </button>
-    </div>
-</form>
-
+@*<div id="addSp">
+    <form>
+        <div class="input-group input-group-sm">
+            <select data-bind="options: viewModel.genres, optionsText: 'Name', optionsValue: 'ID', value: 'GenreID', optionsCaption: 'Genre...'" />
+            <input data-bind="value: Name" type="text" placeholder="Spectacle name..." class="form-control form-control-sm" required />
+            <input data-bind="value: Cost" type="number" placeholder="Ticket's cost..." class="form-control form-control-sm" required />
+            <input data-bind="value: PlayDate" type="datetime-local" name="playdate" class="form-control form-control-sm" required />
+            <button data-bind="click: addS" class="addBtn">
+                Add
+            </button>
+        </div>
+    </form>
+</div>*@
 
 <table class="table table-bordered table-striped">
     <thead>
@@ -48,7 +49,7 @@
             <td data-bind="text: PlayDate"></td>
             <td data-bind="text: RegDate"></td>
             <td>
-                <button class="btn btn-xs btn-danger" data-bind="click: removeItem">
+                <button class="btn btn-sm btn-danger">
                     Delete
                 </button>
             </td>

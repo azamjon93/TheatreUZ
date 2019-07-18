@@ -1,115 +1,118 @@
-﻿function sendAjaxRequest(httpMethod, callback, url) {
-    $.ajax(url ? "/" + url : "", {
-        type: httpMethod,
-        success: callback
-    });
-}
-
-var viewModel = {
+﻿var viewModel = {
     spectacles: ko.observableArray(),
     genres: ko.observableArray()
 };
 
-//function addSpectacle() {
-//    var s = new Object();
-//    s.GenreID = ID;
-//    s.Name = name;
-//    s.Cost = cost;
+function sendAjaxGetRequest(callback, url) {
+    $.ajax(url ? "/" + url : "", {
+        type: "GET",
+        success: callback
+    });
+}
 
-//    spectacles.push(s);
-//}
+function sendAjaxPostRequest(url, postData, callback) {
+    alert(postData);
+    $.ajax(url ? "/" + url : "", {
+        type: "POST",
+        contentType: 'application/json; charset=utf-8',
+        success: callback,
+        data: postData
+    });
+}
 
-//function getAllSpectacles() {
-//    sendAjaxRequest("GET", function (data) {
-//        var returnedData = JSON.parse(data);
-//        viewModel.spectacles.removeAll();
-//        for (var i = 0; i < returnedData.length; i++) {
-//            viewModel.spectacles.push(returnedData[i]);
-//        }
-//    }, "Spectacles/All");
-//}
+class genresViewModel {
+    constructor(genres) {
+        var self = this;
+        self.genres = ko.observableArray(genres);
+        self.getAllGenres = function () {
+            sendAjaxGetRequest(function (data) {
+                var returnedData = JSON.parse(data);
+                self.genres.removeAll();
+                for (var i = 0; i < returnedData.length; i++) {
+                    self.genres.push(returnedData[i]);
+                }
+            }, "Genres/AllGenres");
+        }.bind(self);
+    }
+}
 
-//function getAllGenres() {
-//    sendAjaxRequest("GET", function (data) {
-//        var returnedData = JSON.parse(data);
-//        viewModel.genres.removeAll();
-//        for (var i = 0; i < returnedData.length; i++) {
-//            viewModel.genres.push(returnedData[i]);
-//        }
-//    }, "Genres/AllGenres");
-//}
+class spectacleModel {
+    constructor() {
+        var self = this;
+        self.spectacles = ko.observableArray();
 
-//function removeItem(item) {
-//    sendAjaxRequest("DELETE", function () {
-//        getAllSpectacles()
-//    }, item.ReservationId);
-//}
+        self.GenreID = ko.observable("");
+        self.Name = ko.observable("");
+        self.Cost = ko.observable("");
+        self.PlayDate = ko.observable("");
+        self.RegDate = ko.observable("");
 
-//$(document).ready(function () {
-//    getAllGenres();
-//    getAllSpectacles();
-//    ko.applyBindings(viewModel);
-//});
+        self.addS = function () {
 
+            var spectacle = {
+                GenreID: self.GenreID(),
+                //StateID: viewModel.genres[0].StateID,
+                Name: self.Name(),
+                Cost: self.Cost(),
+                PlayDate: Date.now(),
+                RegDate: Date.now()
+            };
 
+            self.spectacle = ko.observable();
 
-var GenresModel = function (genres) {
-    var self = this;
-    self.genres = ko.observableArray(genres);
+            sendAjaxPostRequest("Spectacles/Create", ko.toJSON(spectacle), function () {
+                alert('Create OK !');
+            });
+        }
+    }
+}
 
-    this.getAllGenres = function () {
-        
-        sendAjaxRequest("GET", function (data) {
-            var returnedData = JSON.parse(data);
-            self.genres.removeAll();
-            for (var i = 0; i < returnedData.length; i++) {
-                self.genres.push(returnedData[i]);
-            }
-        }, "Genres/AllGenres");
-    }.bind(this);
-};
+class spectaclesViewModel {
+    constructor(spectacles) {
+        var self = this;
+        self.spectacles = ko.observableArray(spectacles);
 
-var SpectaclesModel = function (spectacles) {
-    var self = this;
-    self.spectacles = ko.observableArray(spectacles);
+        self.GenreID = ko.observable("");
+        self.Name = ko.observable("");
+        self.Cost = ko.observable("");
+        self.PlayDate = ko.observable("");
+        self.RegDate = ko.observable("");
 
-    this.getAllSpectacles = function () {
-        sendAjaxRequest("GET", function (data) {
-            var returnedData = JSON.parse(data);
-            self.spectacles.removeAll();
-            for (var i = 0; i < returnedData.length; i++) {
-                self.spectacles.push(returnedData[i]);
-            }
-        }, "Spectacles/All");
-    }.bind(this);
+        self.addS = function () {
 
-    this.addSpectacle = function () {
-        sendAjaxRequest("GET", function (data) {
+            var spectacle = {
+                GenreID: self.GenreID(),
+                //StateID: viewModel.genres[0].StateID,
+                Name: self.Name(),
+                Cost: self.Cost(),
+                PlayDate: Date.now(),
+                RegDate: Date.now()
+            };
 
-        }, "Home/Index");
-    }.bind(this);
-};
+            self.spectacle = ko.observable();
+
+            sendAjaxPostRequest("Spectacles/Create", ko.toJSON(spectacle), function () {
+                alert('Create OK !');
+            });
+        }
+
+        self.getAllSpectacles = function () {
+            sendAjaxGetRequest(function (data) {
+                var returnedData = JSON.parse(data);
+                self.spectacles.removeAll();
+                for (var i = 0; i < returnedData.length; i++) {
+                    self.spectacles.push(returnedData[i]);
+                }
+            }, "Spectacles/AllSpectacles");
+        }.bind(self);
+    }
+}
+
 
 $(document).ready(function () {
 
-    var gm = new GenresModel([
-        {
-            ID: '23C06379-81A8-E911-90A2-C8D3FFD5B866',
-            StateID: '1BC06379-81A8-E911-90A2-C8D3FFD5B866',
-            Name: 'Drama',
-            RegDate: '2019-07-17 15:56:06'
-        }]);
-
-    var sm = new SpectaclesModel([
-        {
-            ID: '25C06379-81A8-E911-90A2-C8D3FFD5B866',
-            GenreID: '23C06379-81A8-E911-90A2-C8D3FFD5B866',
-            StateID: '1BC06379-81A8-E911-90A2-C8D3FFD5B866',
-            Name: 'Othello',
-            Cost: 60000,
-            PlayDate: '2019-07-27 19:00:00',
-            RegDate: '2019-07-17 15:56:06'
-        }]);
+    var gm = new genresViewModel();
+    var sm = new spectaclesViewModel();
 
     gm.getAllGenres();
     sm.getAllSpectacles();

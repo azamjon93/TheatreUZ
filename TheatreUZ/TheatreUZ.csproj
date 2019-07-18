@@ -183,7 +183,13 @@
     <Content Include="Content\bootstrap-reboot.css.map" />
     <Content Include="Content\bootstrap-grid.min.css.map" />
     <Content Include="Content\bootstrap-grid.css.map" />
+    <Content Include="Scripts\Custom\GenresAdmin.js" />
+    <Content Include="Scripts\Custom\NotificationsAdmin.js" />
+    <Content Include="Scripts\Custom\RolesAdmin.js" />
+    <Content Include="Scripts\Custom\SalesAdmin.js" />
     <Content Include="Scripts\Custom\SpectaclesAdmin.js" />
+    <Content Include="Scripts\Custom\StatesAdmin.js" />
+    <Content Include="Scripts\Custom\UsersAdmin.js" />
     <Content Include="Scripts\esm\popper-utils.js" />
     <Content Include="Scripts\esm\popper-utils.min.js" />
     <Content Include="Scripts\esm\popper.js" />

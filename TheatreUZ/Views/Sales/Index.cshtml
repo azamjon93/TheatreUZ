@@ -1,57 +1,38 @@
-﻿@model IEnumerable<TheatreUZ.Models.Sale>
-
+﻿
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Registered sales";
 }
 
-<h2>Index</h2>
+@section Scripts
+{
+    <script src="@Url.Content("~/Scripts/Custom/SalesAdmin.js")"></script>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Spectacle.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.State.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.User.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Amount)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.RegDate)
-        </th>
-        <th></th>
-    </tr>
-
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Spectacle.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.State.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.User.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Amount)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.RegDate)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
-        </td>
-    </tr>
 }
+<h2>Registered sales</h2>
 
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>State</th>
+            <th>User</th>
+            <th>Spectacle</th>
+            <th>Amount</th>
+            <th>Added date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody data-bind="foreach: viewModel.users">
+        <tr>
+            <td data-bind="text: State.Name"></td>
+            <td data-bind="text: User.Name"></td>
+            <td data-bind="text: Spectacle.Name"></td>
+            <td data-bind="text: Amount"></td>
+            <td data-bind="text: RegDate"></td>
+            <td>
+                <button class="btn btn-sm btn-danger">
+                    Delete
+                </button>
+            </td>
+        </tr>
+    </tbody>
 </table>

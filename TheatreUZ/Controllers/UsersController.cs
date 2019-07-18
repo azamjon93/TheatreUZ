@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using Newtonsoft.Json;
 using TheatreUZ;
 using TheatreUZ.Models;
 
@@ -14,6 +15,20 @@ namespace TheatreUZ.Controllers
     public class UsersController : Controller
     {
         private TheatreUZContext db = new TheatreUZContext();
+
+        public string AllUsers()
+        {
+            var users = db.Users.ToList();
+
+            try
+            {
+                return JsonConvert.SerializeObject(users.ToList(), Formatting.None, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }); ;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
 
         // GET: Users
         public ActionResult Index()

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using Newtonsoft.Json;
 using TheatreUZ;
 using TheatreUZ.Models;
 
@@ -14,6 +15,20 @@ namespace TheatreUZ.Controllers
     public class RolesController : Controller
     {
         private TheatreUZContext db = new TheatreUZContext();
+
+        public string AllRoles()
+        {
+            var roles = db.Roles.ToList();
+
+            try
+            {
+                return JsonConvert.SerializeObject(roles.ToList(), Formatting.None, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
 
         // GET: Roles
         public ActionResult Index()
