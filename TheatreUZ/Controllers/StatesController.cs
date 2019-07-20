@@ -28,7 +28,7 @@ namespace TheatreUZ.Controllers
             }
         }
         
-        public ActionResult GetAllStates()
+        public ActionResult Index()
         {
             var query = new AllStatesQuery();
             var handler = StateQueryHandlerFactory.Build(query);
@@ -52,16 +52,10 @@ namespace TheatreUZ.Controllers
         public ActionResult AddState(State item)
         {
             var command = new StateSaveCommand(item);
-            var handler = StateCommandHandlerFactory.Build(command);
+            var handler = StateSaveCommandHandlerFactory.Build(command);
             var response = handler.Execute();
             
-            if (response.Success)
-            {
-                item.ID = response.ID;
-                //return Ok(item);
-            }
-
-            return RedirectToAction("GetAllStates");
+            return RedirectToAction("Index");
         }
 
         public ActionResult EditState(Guid id)
@@ -70,6 +64,25 @@ namespace TheatreUZ.Controllers
             var handler = StateQueryHandlerFactory.Build(query);
             return View(handler.Get());
         }
+
+        public ActionResult DeleteState(Guid id)
+        {
+            var query = new OneStateQuery(id);
+            var handler = StateQueryHandlerFactory.Build(query);
+            return View(handler.Get());
+        }
+
+        [HttpPost]
+        public ActionResult DeleteStateConfirmed(Guid id)
+        {
+            var command = new StateDeleteCommand(id);
+            var handler = StateDeleteCommandHandlerFactory.Build(command);
+            var response = handler.Execute();
+
+            return RedirectToAction("Index");
+        }
+
+
 
         //// GET: States
         //public ActionResult Index()

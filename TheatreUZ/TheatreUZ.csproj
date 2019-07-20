@@ -134,6 +134,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Classes\StateDeleteCommand.cs" />
     <Compile Include="Classes\StatesCommandFactory.cs" />
     <Compile Include="Classes\StatesQueryFactory.cs" />
     <Compile Include="Classes\StatesQueryHandler.cs" />
@@ -258,10 +259,9 @@
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\States\Create.cshtml" />
-    <Content Include="Views\States\Delete.cshtml" />
+    <Content Include="Views\States\DeleteState.cshtml" />
     <Content Include="Views\States\Details.cshtml" />
     <Content Include="Views\States\Edit.cshtml" />
-    <Content Include="Views\States\Index.cshtml" />
     <Content Include="Views\Roles\Create.cshtml" />
     <Content Include="Views\Roles\Delete.cshtml" />
     <Content Include="Views\Roles\Details.cshtml" />
@@ -294,7 +294,7 @@
     <Content Include="Views\Notifications\Index.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Home\Add.cshtml" />
-    <Content Include="Views\States\GetAllStates.cshtml" />
+    <Content Include="Views\States\Index.cshtml" />
     <Content Include="Views\States\GetState.cshtml" />
     <Content Include="Views\States\AddState.cshtml" />
     <Content Include="Views\States\EditState.cshtml" />
