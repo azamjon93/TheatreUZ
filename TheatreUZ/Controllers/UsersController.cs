@@ -29,6 +29,21 @@ namespace TheatreUZ.Controllers
                 return ex.Message;
             }
         }
+        
+        [HttpPost]
+        public ActionResult AddUser(string user)
+        {
+            try
+            {
+                User u = JsonConvert.DeserializeObject<User>(user);
+                return RedirectToAction("Index", "Users");
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("Index", "Spectacles");
+            }
+            
+        }
 
         // GET: Users
         public ActionResult Index()

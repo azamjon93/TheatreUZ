@@ -134,6 +134,11 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Classes\StatesCommandFactory.cs" />
+    <Compile Include="Classes\StatesQueryFactory.cs" />
+    <Compile Include="Classes\StatesQueryHandler.cs" />
+    <Compile Include="Classes\CommandResponse.cs" />
+    <Compile Include="Classes\StateSaveCommand.cs" />
     <Compile Include="Controllers\GenresController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\NotificationsController.cs" />
@@ -145,6 +150,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Interfaces\ICommand.cs" />
+    <Compile Include="Interfaces\IQuery.cs" />
     <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Models\Genre.cs" />
     <Compile Include="Models\Notification.cs" />
@@ -184,6 +191,7 @@
     <Content Include="Content\bootstrap-grid.min.css.map" />
     <Content Include="Content\bootstrap-grid.css.map" />
     <Content Include="Scripts\Custom\GenresAdmin.js" />
+    <Content Include="Scripts\Custom\LoginForm.js" />
     <Content Include="Scripts\Custom\NotificationsAdmin.js" />
     <Content Include="Scripts\Custom\RolesAdmin.js" />
     <Content Include="Scripts\Custom\SalesAdmin.js" />
@@ -214,6 +222,10 @@
     <Content Include="Scripts\knockout-3.5.0.debug.js" />
     <Content Include="Scripts\knockout-3.5.0.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\moment-with-locales.js" />
+    <Content Include="Scripts\moment-with-locales.min.js" />
+    <Content Include="Scripts\moment.js" />
+    <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\popper-utils.js" />
     <Content Include="Scripts\popper-utils.min.js" />
     <Content Include="Scripts\popper.js" />
@@ -280,9 +292,16 @@
     <Content Include="Views\Notifications\Details.cshtml" />
     <Content Include="Views\Notifications\Edit.cshtml" />
     <Content Include="Views\Notifications\Index.cshtml" />
+    <Content Include="Views\Shared\_LoginPartial.cshtml" />
+    <Content Include="Views\Home\Add.cshtml" />
+    <Content Include="Views\States\GetAllStates.cshtml" />
+    <Content Include="Views\States\GetState.cshtml" />
+    <Content Include="Views\States\AddState.cshtml" />
+    <Content Include="Views\States\EditState.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="ReadModels\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

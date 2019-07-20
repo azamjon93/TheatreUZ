@@ -1,0 +1,40 @@
+﻿@{
+    string hello = "", enter = "Enter", exit = "Exit";
+    
+    bool isActive = false;
+
+    try
+    {
+        isActive = (bool)Session["UserIsActive"];
+    }
+    catch (Exception)
+    {
+
+    }
+
+    try
+    {
+        //hello += ExsignOnCommon.GetFIOByPIN((string)Session["UserPIN"]) + " - " + ExsignOnCommon.GetAccessTypeByID((int)Session["AccessType"], lang);
+    }
+    catch (Exception)
+    {
+
+    }
+}
+
+@if (isActive)
+{
+    using (Html.BeginForm("LogOut", "OAuth", FormMethod.Get, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+        <ul class="nav navbar-nav navbar-right">
+            <li style="margin-top:15px; list-style-type: none">@hello</li>
+            <li>@Html.ActionLink(exit, "LogOut", "OAuth", null, new { id = "logoutLink", @style = "color: #f74747;" })</li>
+        </ul>
+    }
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li>@Html.ActionLink(enter, "OAuthCheck", "OAuth", routeValues: null, htmlAttributes: new { id = "loginLink", @style = "color: aqua;" })</li>
+    </ul>
+}

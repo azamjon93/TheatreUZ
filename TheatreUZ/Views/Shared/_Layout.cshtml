@@ -3,11 +3,15 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+
     <title>@ViewBag.Title - THEATRE.UZ</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+
 </head>
 <body>
+
     <div class="nav">
         <input type="checkbox" id="nav-check">
         <div class="nav-header">
@@ -23,18 +27,57 @@
             </label>
         </div>
 
-        <div class="nav-links">
+        <div class="nav-links mr-auto">
             <a href="Spectacles">Home</a>
             <a href="#">About theatre</a>
             <a href="#">Actors</a>
             <a href="#">Contacts</a>
         </div>
-        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
-            <li class="nav-item">
-                <span class="currenttime">Current time:</span>
-                <span id="time" class="currenttime">17.07.2019 00:00:00</span>
-            </li>
-        </ul>
+
+        <div class="nav-links ml-auto">
+            <span>CT:</span>
+            <span id="time">17.07.2019 00:00:00</span>
+
+            @{
+                if (true)
+                {
+                    <a href="#" data-toggle="modal" data-target="#loginModal"><span class="fas fa-sign-in-alt"></span> Login</a>
+                }
+                else
+                {
+                    <a href="#"><span class="fas fa-user"></span> Sign Up</a>
+                }
+            }
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="loginModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content" id="mc">
+                <div class="modal-header">
+                    <h4>Login</h4>
+                    <button id="closeModalBtn" type="button" class="close" data-dismiss="modal"> &times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form">
+                        <form class="register-form">
+                            <input id="crName" type="text" placeholder="Name" />
+                            <input id="crEmail" type="text" placeholder="E-mail address" />
+                            <input id="crPassword" type="password" placeholder="Password" />
+                            <button id="crBtn">Create</button>
+                            <p class="message">Already registered? <a href="#">Sign In</a></p>
+                        </form>
+                        <form class="login-form">
+                            <input type="text" placeholder="E-mail" />
+                            <input type="password" placeholder="Password" />
+                            <button id="loginBtn">Login</button>
+                            <p class="message">Not registered? <a href="#">Create an account</a></p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="container body-content">
@@ -47,7 +90,10 @@
     @Scripts.Render("~/Scripts/knockout-3.5.0.js")
     @Scripts.Render("~/Scripts/Custom/ko.simpleGrid.js")
     @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/Scripts/moment.min.js")
     @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/Scripts/Custom/LoginForm.js")
     @RenderSection("scripts", required: false)
+
 </body>
 </html>
