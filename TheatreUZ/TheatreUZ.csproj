@@ -134,12 +134,22 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Classes\RoleDeleteCommand.cs" />
+    <Compile Include="Classes\RoleSaveCommand.cs" />
+    <Compile Include="Classes\RolesCommandFactory.cs" />
+    <Compile Include="Classes\RolesQueryFactory.cs" />
+    <Compile Include="Classes\RolesQueryHandler.cs" />
     <Compile Include="Classes\StateDeleteCommand.cs" />
     <Compile Include="Classes\StatesCommandFactory.cs" />
     <Compile Include="Classes\StatesQueryFactory.cs" />
     <Compile Include="Classes\StatesQueryHandler.cs" />
     <Compile Include="Classes\CommandResponse.cs" />
     <Compile Include="Classes\StateSaveCommand.cs" />
+    <Compile Include="Classes\UserDeleteCommand.cs" />
+    <Compile Include="Classes\UserSaveCommand.cs" />
+    <Compile Include="Classes\UsersCommandFactory.cs" />
+    <Compile Include="Classes\UsersQueryFactory.cs" />
+    <Compile Include="Classes\UsersQueryHandler.cs" />
     <Compile Include="Controllers\GenresController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\NotificationsController.cs" />
@@ -258,24 +268,13 @@
     <Content Include="Scripts\popper.js.map" />
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
-    <Content Include="Views\States\Create.cshtml" />
     <Content Include="Views\States\DeleteState.cshtml" />
-    <Content Include="Views\States\Details.cshtml" />
-    <Content Include="Views\States\Edit.cshtml" />
-    <Content Include="Views\Roles\Create.cshtml" />
-    <Content Include="Views\Roles\Delete.cshtml" />
-    <Content Include="Views\Roles\Details.cshtml" />
-    <Content Include="Views\Roles\Edit.cshtml" />
     <Content Include="Views\Roles\Index.cshtml" />
     <Content Include="Views\Genres\Create.cshtml" />
     <Content Include="Views\Genres\Delete.cshtml" />
     <Content Include="Views\Genres\Details.cshtml" />
     <Content Include="Views\Genres\Edit.cshtml" />
     <Content Include="Views\Genres\Index.cshtml" />
-    <Content Include="Views\Users\Create.cshtml" />
-    <Content Include="Views\Users\Delete.cshtml" />
-    <Content Include="Views\Users\Details.cshtml" />
-    <Content Include="Views\Users\Edit.cshtml" />
     <Content Include="Views\Users\Index.cshtml" />
     <Content Include="Views\Spectacles\Create.cshtml" />
     <Content Include="Views\Spectacles\Delete.cshtml" />
@@ -298,10 +297,13 @@
     <Content Include="Views\States\GetState.cshtml" />
     <Content Include="Views\States\AddState.cshtml" />
     <Content Include="Views\States\EditState.cshtml" />
+    <Content Include="Views\Roles\GetRole.cshtml" />
+    <Content Include="Views\Roles\AddRole.cshtml" />
+    <Content Include="Views\Roles\EditRole.cshtml" />
+    <Content Include="Views\Roles\DeleteRole.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="ReadModels\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

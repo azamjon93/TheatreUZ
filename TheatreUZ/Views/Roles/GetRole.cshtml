@@ -1,10 +1,10 @@
 ﻿@model TheatreUZ.Models.Role
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Role details";
 }
 
-<h2>Details</h2>
+<h2>Role details</h2>
 
 <div>
     <h4>Role</h4>
@@ -37,6 +37,6 @@
     </dl>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Edit", "EditRole", new { id = Model.ID }, new { @class = "btn btn-sm btn-primary" })
+    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-sm btn-primary" })
 </p>

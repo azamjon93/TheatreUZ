@@ -27,12 +27,12 @@
 
     </dl>
 
-    @using (Html.BeginForm("DeleteStateConfirmed", "States")) {
+    @using (Html.BeginForm("Delete", "States", new { id = Model.ID }, FormMethod.Post)) {
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-sm btn-danger" /> |
-            @Html.ActionLink("States list", "Index")
+            <input type="submit" value="Delete" class="btn btn-sm btn-danger" />
+            @Html.ActionLink("States list", "Index", null, new { @class = "btn btn-sm btn-primary" })
         </div>
     }
 </div>

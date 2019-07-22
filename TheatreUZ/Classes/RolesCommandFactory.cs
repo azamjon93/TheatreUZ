@@ -3,27 +3,27 @@ using System.Linq;
 
 namespace TheatreUZ
 {
-    public static class StateSaveCommandHandlerFactory
+    public static class RoleSaveCommandHandlerFactory
     {
-        public static ICommandHandler<StateSaveCommand, CommandResponse> Build(StateSaveCommand command)
+        public static ICommandHandler<RoleSaveCommand, CommandResponse> Build(RoleSaveCommand command)
         {
-            return new StateSaveCommandHandler(command);
+            return new RoleSaveCommandHandler(command);
         }
     }
 
-    public static class StateDeleteCommandHandlerFactory
+    public static class RoleDeleteCommandHandlerFactory
     {
-        public static ICommandHandler<StateDeleteCommand, CommandResponse> Build(StateDeleteCommand command)
+        public static ICommandHandler<RoleDeleteCommand, CommandResponse> Build(RoleDeleteCommand command)
         {
-            return new StateDeleteCommandHandler(command);
+            return new RoleDeleteCommandHandler(command);
         }
     }
 
-    public class StateSaveCommandHandler : ICommandHandler<StateSaveCommand, CommandResponse>
+    public class RoleSaveCommandHandler : ICommandHandler<RoleSaveCommand, CommandResponse>
     {
-        private readonly StateSaveCommand command;
+        private readonly RoleSaveCommand command;
 
-        public StateSaveCommandHandler(StateSaveCommand command)
+        public RoleSaveCommandHandler(RoleSaveCommand command)
         {
             this.command = command;
         }
@@ -39,18 +39,19 @@ namespace TheatreUZ
 
             try
             {
-                var item = db.States.FirstOrDefault(w => w.ID == command.State.ID);
-                
+                var item = db.Roles.FirstOrDefault(w => w.ID == command.Role.ID);
+
                 if (item == null)
                 {
-                    command.State.ID = Guid.NewGuid();
-                    db.States.Add(command.State);
+                    command.Role.ID = Guid.NewGuid();
+                    db.Roles.Add(command.Role);
                 }
                 else
                 {
                     db.Entry(item);
-                    item.Name = command.State.Name;
-                    item.RegDate = command.State.RegDate;
+                    item.Name = command.Role.Name;
+                    item.StateID = command.Role.StateID;
+                    item.RegDate = command.Role.RegDate;
                 }
 
                 db.SaveChanges();
@@ -61,18 +62,18 @@ namespace TheatreUZ
             }
             catch
             {
-                // log error
+
             }
 
             return response;
         }
     }
 
-    public class StateDeleteCommandHandler : ICommandHandler<StateDeleteCommand, CommandResponse>
+    public class RoleDeleteCommandHandler : ICommandHandler<RoleDeleteCommand, CommandResponse>
     {
-        private readonly StateDeleteCommand command;
+        private readonly RoleDeleteCommand command;
 
-        public StateDeleteCommandHandler(StateDeleteCommand command)
+        public RoleDeleteCommandHandler(RoleDeleteCommand command)
         {
             this.command = command;
         }
@@ -88,10 +89,10 @@ namespace TheatreUZ
 
             try
             {
-                var item = db.States.FirstOrDefault(w => w.ID == command.StateID);
+                var item = db.Roles.FirstOrDefault(w => w.ID == command.RoleID);
 
-                db.States.Remove(item);
-
+                db.Entry(item);
+                item.StateID = db.States.Where(s => s.Name == "Deleted").FirstOrDefault().ID;
                 db.SaveChanges();
 
                 response.ID = item.ID;
@@ -100,7 +101,7 @@ namespace TheatreUZ
             }
             catch
             {
-                // log error
+
             }
 
             return response;
