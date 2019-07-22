@@ -10,6 +10,7 @@ namespace TheatreUZ.Models
 
         public string Name { get; set; }
         public double Cost { get; set; }
+        public int TicketsCount { get; set; }
         public DateTime PlayDate { get; set; }
         public DateTime RegDate { get; set; }
 

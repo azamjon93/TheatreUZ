@@ -3,27 +3,27 @@ using System.Linq;
 
 namespace TheatreUZ
 {
-    public static class UserSaveCommandHandlerFactory
+    public static class GenreSaveCommandHandlerFactory
     {
-        public static ICommandHandler<UserSaveCommand, CommandResponse> Build(UserSaveCommand command)
+        public static ICommandHandler<GenreSaveCommand, CommandResponse> Build(GenreSaveCommand command)
         {
-            return new UserSaveCommandHandler(command);
+            return new GenreSaveCommandHandler(command);
         }
     }
 
-    public static class UserDeleteCommandHandlerFactory
+    public static class GenreDeleteCommandHandlerFactory
     {
-        public static ICommandHandler<UserDeleteCommand, CommandResponse> Build(UserDeleteCommand command)
+        public static ICommandHandler<GenreDeleteCommand, CommandResponse> Build(GenreDeleteCommand command)
         {
-            return new UserDeleteCommandHandler(command);
+            return new GenreDeleteCommandHandler(command);
         }
     }
 
-    public class UserSaveCommandHandler : ICommandHandler<UserSaveCommand, CommandResponse>
+    public class GenreSaveCommandHandler : ICommandHandler<GenreSaveCommand, CommandResponse>
     {
-        private readonly UserSaveCommand command;
+        private readonly GenreSaveCommand command;
 
-        public UserSaveCommandHandler(UserSaveCommand command)
+        public GenreSaveCommandHandler(GenreSaveCommand command)
         {
             this.command = command;
         }
@@ -39,21 +39,19 @@ namespace TheatreUZ
 
             try
             {
-                var item = db.Users.FirstOrDefault(w => w.ID == command.User.ID);
+                var item = db.Genres.FirstOrDefault(w => w.ID == command.Genre.ID);
 
                 if (item == null)
                 {
-                    command.User.ID = Guid.NewGuid();
-                    db.Users.Add(command.User);
+                    command.Genre.ID = Guid.NewGuid();
+                    db.Genres.Add(command.Genre);
                 }
                 else
                 {
                     db.Entry(item);
-                    item.Name = command.User.Name;
-                    item.Email = command.User.Email;
-                    item.StateID = command.User.StateID;
-                    item.RoleID = command.User.RoleID;
-                    item.RegDate = command.User.RegDate;
+                    item.Name = command.Genre.Name;
+                    item.StateID = command.Genre.StateID;
+                    item.RegDate = command.Genre.RegDate;
                 }
 
                 db.SaveChanges();
@@ -71,11 +69,11 @@ namespace TheatreUZ
         }
     }
 
-    public class UserDeleteCommandHandler : ICommandHandler<UserDeleteCommand, CommandResponse>
+    public class GenreDeleteCommandHandler : ICommandHandler<GenreDeleteCommand, CommandResponse>
     {
-        private readonly UserDeleteCommand command;
+        private readonly GenreDeleteCommand command;
 
-        public UserDeleteCommandHandler(UserDeleteCommand command)
+        public GenreDeleteCommandHandler(GenreDeleteCommand command)
         {
             this.command = command;
         }
@@ -91,7 +89,7 @@ namespace TheatreUZ
 
             try
             {
-                var item = db.Users.FirstOrDefault(w => w.ID == command.UserID);
+                var item = db.Genres.FirstOrDefault(w => w.ID == command.GenreID);
 
                 db.Entry(item);
                 item.StateID = db.States.Where(s => s.Name == "Deleted").FirstOrDefault().ID;

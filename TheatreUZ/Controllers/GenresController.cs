@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Data.Entity;
 using System.Linq;
-using System.Net;
 using System.Web.Mvc;
 using Newtonsoft.Json;
 using TheatreUZ.Models;
@@ -10,11 +8,10 @@ namespace TheatreUZ.Controllers
 {
     public class GenresController : Controller
     {
-        private TheatreUZContext db = new TheatreUZContext();
-
         public string AllGenres()
         {
-            var genres = db.Genres.ToList();
+            var handler = GenreQueryHandlerFactory.Build(new AllGenresQuery());
+            var genres = handler.Get();
 
             try
             {
@@ -26,119 +23,68 @@ namespace TheatreUZ.Controllers
             }
         }
 
-        // GET: Genres
         public ActionResult Index()
         {
-            var genres = db.Genres.Include(g => g.State);
-            return View(genres.ToList());
+            var handler = GenreQueryHandlerFactory.Build(new AllGenresQuery());
+
+            return View(handler.Get());
         }
 
-        // GET: Genres/Details/5
-        public ActionResult Details(Guid? id)
+        public ActionResult GetGenre(Guid id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Genre genre = db.Genres.Find(id);
-            if (genre == null)
-            {
-                return HttpNotFound();
-            }
-            return View(genre);
+            var handler = GenreQueryHandlerFactory.Build(new OneGenreQuery(id));
+
+            return View(handler.Get());
         }
 
-        // GET: Genres/Create
-        public ActionResult Create()
+        public ActionResult AddGenre()
         {
-            ViewBag.StateID = new SelectList(db.States, "ID", "Name");
+            var handler = StateQueryHandlerFactory.Build(new AllStatesQuery());
+            ViewBag.StateID = new SelectList(handler.Get(), "ID", "Name");
+
             return View();
         }
 
-        // POST: Genres/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,StateID,Name,RegDate")] Genre genre)
+        public ActionResult AddGenre(Genre item)
         {
-            if (ModelState.IsValid)
-            {
-                genre.ID = Guid.NewGuid();
-                db.Genres.Add(genre);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
+            var handler = GenreSaveCommandHandlerFactory.Build(new GenreSaveCommand(item));
+            var response = handler.Execute();
 
-            ViewBag.StateID = new SelectList(db.States, "ID", "Name", genre.StateID);
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult EditGenre(Guid id)
+        {
+            var genreQueryHandler = GenreQueryHandlerFactory.Build(new OneGenreQuery(id));
+            var StatesQueryHandler = StateQueryHandlerFactory.Build(new AllStatesQuery());
+
+            var genre = genreQueryHandler.Get();
+            var states = StatesQueryHandler.Get();
+
+            ViewBag.StateID = new SelectList(states, "ID", "Name", genre.StateID);
+
             return View(genre);
         }
 
-        // GET: Genres/Edit/5
-        public ActionResult Edit(Guid? id)
+        public ActionResult DeleteGenre(Guid id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Genre genre = db.Genres.Find(id);
-            if (genre == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.StateID = new SelectList(db.States, "ID", "Name", genre.StateID);
-            return View(genre);
+            var handler = GenreQueryHandlerFactory.Build(new OneGenreQuery(id));
+
+            return View(handler.Get());
         }
 
-        // POST: Genres/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,StateID,Name,RegDate")] Genre genre)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(genre).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            ViewBag.StateID = new SelectList(db.States, "ID", "Name", genre.StateID);
-            return View(genre);
-        }
-
-        // GET: Genres/Delete/5
-        public ActionResult Delete(Guid? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Genre genre = db.Genres.Find(id);
-            if (genre == null)
-            {
-                return HttpNotFound();
-            }
-            return View(genre);
-        }
-
-        // POST: Genres/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(Guid id)
         {
-            Genre genre = db.Genres.Find(id);
-            db.Genres.Remove(genre);
-            db.SaveChanges();
+            var handler = GenreDeleteCommandHandlerFactory.Build(new GenreDeleteCommand(id));
+            var response = handler.Execute();
+
             return RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                db.Dispose();
-            }
             base.Dispose(disposing);
         }
     }

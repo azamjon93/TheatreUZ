@@ -1,4 +1,5 @@
-﻿
+﻿@model IEnumerable<TheatreUZ.Models.Notification>
+
 @{
     ViewBag.Title = "Registered notifications";
 }
@@ -6,33 +7,61 @@
 @section Scripts
 {
     <script src="@Url.Content("~/Scripts/Custom/NotificationsAdmin.js")"></script>
-
 }
+
 <h2>Registered notifications</h2>
+
+<p>
+    @Html.ActionLink("Add new", "AddNotification", null, new { @class = "btn btn-sm btn-success", @style = "display:block;float:right;margin:10px", @datatoggle = "tooltip", @title = "Қаторни ўчириш" })
+</p>
 
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
-            <th>State</th>
-            <th>User</th>
-            <th>Email</th>
-            <th>Message</th>
-            <th>Sent date</th>
+            <th>
+                @Html.DisplayNameFor(model => model.User.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Message)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RegDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.State.Name)
+            </th>
             <th>Actions</th>
         </tr>
     </thead>
-    <tbody data-bind="foreach: viewModel.notifications">
-        <tr>
-            <td data-bind="text: State.Name"></td>
-            <td data-bind="text: User.Name"></td>
-            <td data-bind="text: User.Email"></td>
-            <td data-bind="text: Message"></td>
-            <td data-bind="text: RegDate"></td>
-            <td>
-                <button class="btn btn-sm btn-danger">
-                    Delete
-                </button>
-            </td>
-        </tr>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Message)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RegDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.State.Name)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "EditNotification", new { id = item.ID }, new { @class = "btn btn-sm btn-primary" })
+                    @Html.ActionLink("Details", "GetNotification", new { id = item.ID }, new { @class = "btn btn-sm btn-info" })
+                    @Html.ActionLink("Delete", "DeleteNotification", new { id = item.ID }, new { @class = "btn btn-sm btn-danger" })
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

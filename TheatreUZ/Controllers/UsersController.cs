@@ -40,7 +40,7 @@ namespace TheatreUZ.Controllers
         public ActionResult AddUser()
         {
             var statesQueryHandler = StateQueryHandlerFactory.Build(new AllStatesQuery());
-            var rolesQueryHandler = StateQueryHandlerFactory.Build(new AllStatesQuery());
+            var rolesQueryHandler = RoleQueryHandlerFactory.Build(new AllRolesQuery());
 
             ViewBag.StateID = new SelectList(statesQueryHandler.Get(), "ID", "Name");
             ViewBag.RoleID = new SelectList(rolesQueryHandler.Get(), "ID", "Name");
@@ -63,10 +63,10 @@ namespace TheatreUZ.Controllers
             var rolesQueryHandler = RoleQueryHandlerFactory.Build(new AllRolesQuery());
             var statesQueryHandler = StateQueryHandlerFactory.Build(new AllStatesQuery());
 
-            ViewBag.StateID = new SelectList(statesQueryHandler.Get(), "ID", "Name");
-            ViewBag.RoleID = new SelectList(rolesQueryHandler.Get(), "ID", "Name");
-
             var user = userQueryHandler.Get();
+
+            ViewBag.StateID = new SelectList(statesQueryHandler.Get(), "ID", "Name", user.StateID);
+            ViewBag.RoleID = new SelectList(rolesQueryHandler.Get(), "ID", "Name", user.RoleID);
 
             return View(user);
         }

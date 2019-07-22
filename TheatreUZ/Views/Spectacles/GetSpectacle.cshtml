@@ -1,0 +1,66 @@
+﻿@model TheatreUZ.Models.Spectacle
+
+@{
+    ViewBag.Title = "Spectacle details";
+}
+
+<div>
+    <h4>Spectacle</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Genre.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Genre.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.State.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.State.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Cost)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Cost)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PlayDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PlayDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RegDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RegDate)
+        </dd>
+
+    </dl>
+</div>
+
+<p>
+    @Html.ActionLink("Edit", "EditSpectacle", new { id = Model.ID }, new { @class = "btn btn-sm btn-primary" })
+    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-sm btn-primary" })
+</p>
+

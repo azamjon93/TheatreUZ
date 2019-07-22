@@ -1,28 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
 using System.Linq;
-using System.Net;
-using System.Web;
 using System.Web.Mvc;
 using Newtonsoft.Json;
-using TheatreUZ;
 using TheatreUZ.Models;
 
 namespace TheatreUZ.Controllers
 {
     public class NotificationsController : Controller
     {
-        private TheatreUZContext db = new TheatreUZContext();
-
         public string AllNotifications()
         {
-            var notifications = db.Notifications.ToList();
+            var handler = NotificationQueryHandlerFactory.Build(new AllNotificationsQuery());
+            var notifications = handler.Get();
 
             try
             {
-                return JsonConvert.SerializeObject(notifications.ToList(), Formatting.None, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }); ;
+                return JsonConvert.SerializeObject(notifications.ToList(), Formatting.None, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
             }
             catch (Exception ex)
             {
@@ -30,123 +23,72 @@ namespace TheatreUZ.Controllers
             }
         }
 
-        // GET: Notifications
         public ActionResult Index()
         {
-            var notifications = db.Notifications.Include(n => n.State).Include(n => n.User);
-            return View(notifications.ToList());
+            var handler = NotificationQueryHandlerFactory.Build(new AllNotificationsQuery());
+
+            return View(handler.Get());
         }
 
-        // GET: Notifications/Details/5
-        public ActionResult Details(Guid? id)
+        public ActionResult GetNotification(Guid id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Notification notification = db.Notifications.Find(id);
-            if (notification == null)
-            {
-                return HttpNotFound();
-            }
-            return View(notification);
+            var handler = NotificationQueryHandlerFactory.Build(new OneNotificationQuery(id));
+
+            return View(handler.Get());
         }
 
-        // GET: Notifications/Create
-        public ActionResult Create()
+        public ActionResult AddNotification()
         {
-            ViewBag.StateID = new SelectList(db.States, "ID", "Name");
-            ViewBag.UserID = new SelectList(db.Users, "ID", "Name");
+            var statesQueryHandler = StateQueryHandlerFactory.Build(new AllStatesQuery());
+            var usersQueryHandler = UserQueryHandlerFactory.Build(new AllUsersQuery());
+
+            ViewBag.StateID = new SelectList(statesQueryHandler.Get(), "ID", "Name");
+            ViewBag.UserID = new SelectList(usersQueryHandler.Get(), "ID", "Name");
+
             return View();
         }
 
-        // POST: Notifications/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,UserID,StateID,Message,RegDate")] Notification notification)
+        public ActionResult AddNotification(Notification item)
         {
-            if (ModelState.IsValid)
-            {
-                notification.ID = Guid.NewGuid();
-                db.Notifications.Add(notification);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
+            var handler = NotificationSaveCommandHandlerFactory.Build(new NotificationSaveCommand(item));
+            var response = handler.Execute();
 
-            ViewBag.StateID = new SelectList(db.States, "ID", "Name", notification.StateID);
-            ViewBag.UserID = new SelectList(db.Users, "ID", "Name", notification.UserID);
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult EditNotification(Guid id)
+        {
+            var notificationQueryHandler = NotificationQueryHandlerFactory.Build(new OneNotificationQuery(id));
+            var statesQueryHandler = StateQueryHandlerFactory.Build(new AllStatesQuery());
+            var usersQueryHandler = UserQueryHandlerFactory.Build(new AllUsersQuery());
+
+            var notification = notificationQueryHandler.Get();
+
+            ViewBag.StateID = new SelectList(statesQueryHandler.Get(), "ID", "Name", notification.StateID);
+            ViewBag.UserID = new SelectList(usersQueryHandler.Get(), "ID", "Name", notification.UserID);
+
             return View(notification);
         }
 
-        // GET: Notifications/Edit/5
-        public ActionResult Edit(Guid? id)
+        public ActionResult DeleteNotification(Guid id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Notification notification = db.Notifications.Find(id);
-            if (notification == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.StateID = new SelectList(db.States, "ID", "Name", notification.StateID);
-            ViewBag.UserID = new SelectList(db.Users, "ID", "Name", notification.UserID);
-            return View(notification);
+            var handler = NotificationQueryHandlerFactory.Build(new OneNotificationQuery(id));
+
+            return View(handler.Get());
         }
 
-        // POST: Notifications/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,UserID,StateID,Message,RegDate")] Notification notification)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(notification).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            ViewBag.StateID = new SelectList(db.States, "ID", "Name", notification.StateID);
-            ViewBag.UserID = new SelectList(db.Users, "ID", "Name", notification.UserID);
-            return View(notification);
-        }
-
-        // GET: Notifications/Delete/5
-        public ActionResult Delete(Guid? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Notification notification = db.Notifications.Find(id);
-            if (notification == null)
-            {
-                return HttpNotFound();
-            }
-            return View(notification);
-        }
-
-        // POST: Notifications/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(Guid id)
         {
-            Notification notification = db.Notifications.Find(id);
-            db.Notifications.Remove(notification);
-            db.SaveChanges();
+            var handler = NotificationDeleteCommandHandlerFactory.Build(new NotificationDeleteCommand(id));
+            var response = handler.Execute();
+
             return RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                db.Dispose();
-            }
             base.Dispose(disposing);
         }
     }

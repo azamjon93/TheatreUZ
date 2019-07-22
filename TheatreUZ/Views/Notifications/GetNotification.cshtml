@@ -1,10 +1,8 @@
 ﻿@model TheatreUZ.Models.Notification
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Notification details";
 }
-
-<h2>Details</h2>
 
 <div>
     <h4>Notification</h4>
@@ -44,7 +42,8 @@
 
     </dl>
 </div>
+
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Edit", "EditNotification", new { id = Model.ID }, new { @class = "btn btn-sm btn-primary" })
+    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-sm btn-primary" })
 </p>
