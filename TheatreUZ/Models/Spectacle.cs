@@ -20,4 +20,13 @@ namespace TheatreUZ.Models
         public ICollection<Sale> Sales { get; set; }
 
     }
+
+    public class SpectaclePageModel
+    {
+        public List<Spectacle> Spectacles { get; set; }
+        
+        public int CurrentPageIndex { get; set; }
+        
+        public int PageCount { get; set; }
+    }
 }

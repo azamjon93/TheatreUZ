@@ -18,4 +18,14 @@ namespace TheatreUZ
             ID = id;
         }
     }
+
+    public class OneUserByEmailQuery : IQuery<User>
+    {
+        public string Email { get; set; }
+
+        public OneUserByEmailQuery(string email)
+        {
+            Email = email;
+        }
+    }
 }

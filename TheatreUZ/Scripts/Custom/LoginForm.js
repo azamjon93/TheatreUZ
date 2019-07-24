@@ -10,14 +10,14 @@ $('.message a').click(function () {
 
 
 function sendPostRequest(url, postData, callback) {
-
+    
     $.ajax(url, {
         type: "POST",
         dataType: "text",
-        data: "user=" + JSON.stringify(postData),
+        data: "userStr=" + JSON.stringify(postData),
         success: callback,
         error: function (xhr, ajaxOptions, thrownError) {
-            alert(thrownError);
+            //alert('eerroorr');
         }
     });
 }
@@ -35,7 +35,7 @@ $('#crBtn').click(function () {
     var user = {
         Name: name,
         Email: email,
-        Password: password
+        PasswordHash: password
     }
 
     if (name === '' || password === '' || !isEmail(email)) {
@@ -43,9 +43,34 @@ $('#crBtn').click(function () {
     }
     else {
         $('#closeModalBtn').click();
-        sendPostRequest("Users/AddUser", user, function (data) {
-            alert(data);
+        sendPostRequest("Auth/AddUser", user, function (data) {
+            //alert(data);
         })
     }
+});
+
+$('#loginBtn').click(function () {
+    var email = $('#loginEmail').val();
+    var password = $('#loginPassword').val();
+
+    var user = {
+        Email: email,
+        PasswordHash: password
+    }
+
+    $('#closeModalBtn').click();
+    sendPostRequest("Auth/LogIn", user, function (data) {
+        //alert(data);
+    });
+    //location.reload();
+});
+
+$('#logoutBtn').click(function () {
+
+    $('#closeModalBtn').click();
+    sendPostRequest("Auth/LogOut", "", function (data) {
+        //alert(data);
+    });
+    //location.reload();
 });
 

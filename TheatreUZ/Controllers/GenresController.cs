@@ -23,6 +23,7 @@ namespace TheatreUZ.Controllers
             }
         }
 
+        [Authorize]
         public ActionResult Index()
         {
             var handler = GenreQueryHandlerFactory.Build(new AllGenresQuery());

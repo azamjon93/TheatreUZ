@@ -32,8 +32,8 @@ namespace TheatreUZ
 
             var users = new List<User>
             {
-                new User { Name = "Administrator of system", Email = "admin@theatre.uz", Role = roles.Where(r => r.Name == "Admin").FirstOrDefault(), State = states.Where(s => s.Name == "Active").FirstOrDefault(), RegDate = DateTime.Now, PasswordHash = "kjfw2837r8" },
-                new User { Name = "Azamjon Nabijonov", Email = "mr.nabijonov@gmail.com", Role = roles.Where(r => r.Name == "User").FirstOrDefault(), State = states.Where(s => s.Name == "Active").FirstOrDefault(), RegDate = DateTime.Now, PasswordHash = "flkgjh955" }
+                new User { Name = "Administrator of system", Email = "admin@theatre.uz", Role = roles.Where(r => r.Name == "Admin").FirstOrDefault(), State = states.Where(s => s.Name == "Active").FirstOrDefault(), RegDate = DateTime.Now, PasswordHash = "6b51d431df5d7f141cbececcf79edf3dd861c3b4069f0b11661a3eefacbba918" },
+                new User { Name = "Azamjon Nabijonov", Email = "mr.nabijonov@gmail.com", Role = roles.Where(r => r.Name == "User").FirstOrDefault(), State = states.Where(s => s.Name == "Active").FirstOrDefault(), RegDate = DateTime.Now, PasswordHash = "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b" }
             };
 
             users.ForEach(u => db.Users.Add(u));
@@ -51,6 +51,7 @@ namespace TheatreUZ
             var spectacles = new List<Spectacle>
             {
                 new Spectacle { Name = "Othello", Cost = 60000, TicketsCount = 100, Genre = genres.Where(g => g.Name == "Drama").FirstOrDefault(), PlayDate = new DateTime(2019, 07, 27, 19, 00, 00), RegDate = DateTime.Now, State = states.Where(s => s.Name == "Active").FirstOrDefault() },
+                new Spectacle { Name = "Doctor Jhonson", Cost = 80000, TicketsCount = 100, Genre = genres.Where(g => g.Name == "Comedy").FirstOrDefault(), PlayDate = new DateTime(2019, 07, 27, 19, 00, 00), RegDate = DateTime.Now, State = states.Where(s => s.Name == "Active").FirstOrDefault() },
                 new Spectacle { Name = "King Leer", Cost = 70000, TicketsCount = 100, Genre = genres.Where(g => g.Name == "Drama").FirstOrDefault(), PlayDate = new DateTime(2019, 07, 28, 19, 00, 00), RegDate = DateTime.Now, State = states.Where(s => s.Name == "Active").FirstOrDefault() },
                 new Spectacle { Name = "May I come in?", Cost = 80000, TicketsCount = 100, Genre = genres.Where(g => g.Name == "Comedy").FirstOrDefault(), PlayDate = new DateTime(2019, 07, 29, 19, 00, 00), RegDate = DateTime.Now, State = states.Where(s => s.Name == "Active").FirstOrDefault() },
                 new Spectacle { Name = "Colorful life", Cost = 90000, TicketsCount = 100, Genre = genres.Where(g => g.Name == "Comedy").FirstOrDefault(), PlayDate = new DateTime(2019, 07, 30, 19, 00, 00), RegDate = DateTime.Now, State = states.Where(s => s.Name == "Active").FirstOrDefault() }

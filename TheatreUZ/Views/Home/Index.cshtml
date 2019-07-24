@@ -1,6 +1,57 @@
-﻿
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
+﻿@model TheatreUZ.Models.SpectaclePageModel
+
+@Styles.Render("~/Content/Card.css")
+
+
+@using (Html.BeginForm("Index", "Spectacles", FormMethod.Post))
+{
+    foreach (var item in Model.Spectacles)
+    {
+        <div class="my-2 bg-white shadow-1 blue-hover" style="width: 30%; overflow: hidden; border-radius: 5px;">
+            <img src="https://seechicagodance.com/sites/default/files/styles/carousel_large/public/media/headlines/Lynn%20Colburn%20Shapiro/Desdemona%20and%20Othello%20%235.jpg?itok=ZzOMoXDa" class="d-block w-full">
+            <div class="px-2 py-2">
+                <p class="mb-0 small font-weight-medium text-uppercase mb-1 text-muted lts-2px">
+                    @item.Genre.Name
+                </p>
+
+                <h1 class="ff-serif font-weight-normal text-black card-heading mt-0 mb-1" style="line-height: 1.25;">
+                    @item.Name
+                </h1>
+            </div>
+
+            <a href="#0" class="text-uppercase d-inline-block font-weight-medium lts-2px ml-2 mb-2 text-center styled-link">
+                Read More
+            </a>
+        </div>
+    }
+
+    <br />
+    <table cellpadding="0" cellspacing="0">
+        <tr>
+            @for (int i = 1; i <= Model.PageCount; i++)
+            {
+                <td>
+                    @if (i != Model.CurrentPageIndex)
+                    {
+                        <a href="javascript:PagerClick(@i);">@i</a>
+                    }
+                    else
+                    {
+                        <span>@i</span>
+                    }
+                </td>
+            }
+        </tr>
+    </table>
+    <input type="hidden" id="hfCurrentPageIndex" name="currentPageIndex" />
+}
+
+<script type="text/javascript">
+    function PagerClick(index) {
+        document.getElementById("hfCurrentPageIndex").value = index;
+        document.forms[0].submit();
+    }
+</script>
+
+
+

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace TheatreUZ
@@ -43,16 +44,27 @@ namespace TheatreUZ
 
                 if (item == null)
                 {
-                    command.User.ID = Guid.NewGuid();
-                    db.Users.Add(command.User);
+                    item = command.User;
+                    item.ID = Guid.NewGuid();
+                    item.RegDate = DateTime.Now;
+                    item.PasswordHash = OwnSecurity.Hash(item.PasswordHash);
+                    item.State = db.States.Where(s => s.Name == "Active").FirstOrDefault();
+                    item.StateID = db.States.Where(s => s.Name == "Active").FirstOrDefault().ID;
+
+                    if (item.Role == null)
+                    {
+                        item.Role = db.Roles.Where(r => r.Name == "User").FirstOrDefault();
+                        item.RoleID = db.Roles.Where(r => r.Name == "User").FirstOrDefault().ID;
+                    }
+                    db.Users.Add(item);
                 }
                 else
                 {
                     db.Entry(item);
                     item.Name = command.User.Name;
                     item.Email = command.User.Email;
-                    item.StateID = command.User.StateID;
                     item.RoleID = command.User.RoleID;
+                    item.StateID = command.User.StateID;
                     item.RegDate = command.User.RegDate;
                 }
 
@@ -60,6 +72,11 @@ namespace TheatreUZ
 
                 response.ID = item.ID;
                 response.Success = true;
+                response.ResponseObjects = new List<object>
+                {
+                    item.Name,
+                    item.Role
+                };
                 response.Message = "Saved state.";
             }
             catch

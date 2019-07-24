@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace TheatreUZ
 {
@@ -9,5 +10,7 @@ namespace TheatreUZ
         public bool Success { get; set; }
 
         public string Message { get; set; }
+
+        public List<object> ResponseObjects { get; set; }
     }
 }

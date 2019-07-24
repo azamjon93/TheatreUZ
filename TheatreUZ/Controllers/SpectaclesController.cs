@@ -25,11 +25,10 @@ namespace TheatreUZ.Controllers
 
         public ActionResult Index()
         {
-            var handler = SpectacleQueryHandlerFactory.Build(new AllSpectaclesQuery());
-
-            return View(handler.Get());
+            var allSpectaclesHandler = SpectacleQueryHandlerFactory.Build(new AllSpectaclesQuery());
+            return View(allSpectaclesHandler.Get());
         }
-
+        
         public ActionResult GetSpectacle(Guid id)
         {
             var handler = SpectacleQueryHandlerFactory.Build(new OneSpectacleQuery(id));

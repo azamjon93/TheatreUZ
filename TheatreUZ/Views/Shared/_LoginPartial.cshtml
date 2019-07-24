@@ -1,40 +1,63 @@
-﻿@{
-    string hello = "", enter = "Enter", exit = "Exit";
-    
-    bool isActive = false;
+﻿
+@{
+    var userID = (string)Session["UserID"];
+    var roleName = (string)Session["Role"];
+}
 
-    try
+@{
+    if (roleName == null)
     {
-        isActive = (bool)Session["UserIsActive"];
+        <a href="#" data-toggle="modal" data-target="#loginModal"><span class="fas fa-sign-in-alt"></span> Login</a>
     }
-    catch (Exception)
+    else
     {
-
-    }
-
-    try
-    {
-        //hello += ExsignOnCommon.GetFIOByPIN((string)Session["UserPIN"]) + " - " + ExsignOnCommon.GetAccessTypeByID((int)Session["AccessType"], lang);
-    }
-    catch (Exception)
-    {
-
+        <a href="#" data-toggle="modal" data-target="#userModal"><span class="fa fa-user"></span> @Session["UserName"]</a>
     }
 }
 
-@if (isActive)
-{
-    using (Html.BeginForm("LogOut", "OAuth", FormMethod.Get, new { id = "logoutForm", @class = "navbar-right" }))
-    {
-        <ul class="nav navbar-nav navbar-right">
-            <li style="margin-top:15px; list-style-type: none">@hello</li>
-            <li>@Html.ActionLink(exit, "LogOut", "OAuth", null, new { id = "logoutLink", @style = "color: #f74747;" })</li>
-        </ul>
-    }
-}
-else
-{
-    <ul class="nav navbar-nav navbar-right">
-        <li>@Html.ActionLink(enter, "OAuthCheck", "OAuth", routeValues: null, htmlAttributes: new { id = "loginLink", @style = "color: aqua;" })</li>
-    </ul>
-}
+<div class="modal fade" id="loginModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content" id="mc">
+            <div class="modal-header">
+                <h4>Login</h4>
+                <button id="closeModalBtn" type="button" class="close" data-dismiss="modal"> &times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form">
+                    <form class="register-form" method="post">
+                        <input id="crName" type="text" placeholder="Name" />
+                        <input id="crEmail" type="text" placeholder="E-mail address" />
+                        <input id="crPassword" type="password" placeholder="Password" />
+                        <button id="crBtn">Create</button>
+                        <p class="message">Already registered? <a href="#">Sign In</a></p>
+                    </form>
+
+                    <form class="login-form">
+                        <input id="loginEmail" type="text" placeholder="E-mail" />
+                        <input id="loginPassword" type="password" placeholder="Password" />
+                        <button id="loginBtn">Login</button>
+                        <p class="message">Not registered? <a href="#">Create an account</a></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="userModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content" id="mc">
+            <div class="modal-header">
+                <h4>Log out</h4>
+                <button id="closeModalBtn" type="button" class="close" data-dismiss="modal"> &times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form">
+                    <form class="login-form">
+                        <button id="logoutBtn">Log out  <span class="fas fa-sign-in-alt"></span></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

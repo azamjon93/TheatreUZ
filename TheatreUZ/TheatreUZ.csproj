@@ -154,6 +154,7 @@
     <Compile Include="Classes\SalesCommandFactory.cs" />
     <Compile Include="Classes\SalesQueryFactory.cs" />
     <Compile Include="Classes\SalesQueryHandler.cs" />
+    <Compile Include="Security\Security.cs" />
     <Compile Include="Classes\SpectacleDeleteCommand.cs" />
     <Compile Include="Classes\SpectacleSaveCommand.cs" />
     <Compile Include="Classes\SpectaclesCommandfactory.cs" />
@@ -170,6 +171,7 @@
     <Compile Include="Classes\UsersCommandFactory.cs" />
     <Compile Include="Classes\UsersQueryFactory.cs" />
     <Compile Include="Classes\UsersQueryHandler.cs" />
+    <Compile Include="Controllers\AuthController.cs" />
     <Compile Include="Controllers\GenresController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\NotificationsController.cs" />
@@ -193,6 +195,7 @@
     <Compile Include="Models\State.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Security\TAuth.cs" />
     <Compile Include="TheatreUZContext.cs" />
     <Compile Include="TheatreUZInitializer.cs" />
   </ItemGroup>
@@ -203,6 +206,7 @@
     <Content Include="Content\bootstrap-reboot.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Card.css" />
     <Content Include="Content\Images\masks.png" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
@@ -328,6 +332,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Auth\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
