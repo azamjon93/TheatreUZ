@@ -31,6 +31,12 @@ textarea {
 
 /* ***********   CUSTOM STYLES   **************** */
 
+.card-container{
+    position:absolute;
+    bottom:0;
+    margin-bottom:10px;
+}
+
 #mc {
     width:400px;
     height:500px;

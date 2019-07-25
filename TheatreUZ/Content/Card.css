@@ -120,14 +120,14 @@ body, .text-light-black {
 .styled-link {
     text-decoration: none;
     outline: none;
-    color: #2196fe;
+    color: #1d8f65;
     transition: all 0.25s ease-in;
 }
 
     .styled-link:hover,
     .styled-link:focus,
     .styled-link:active {
-        color: #536dfe;
+        color: #1d8f65;
     }
 
 .shadow-1 {
@@ -142,7 +142,7 @@ body, .text-light-black {
     .blue-hover:hover {
         transform: translateY(-5px);
         mar border: none;
-        border-bottom: 5px solid #2196fe;
+        border-bottom: 5px solid #1d8f65;
     }
 
 

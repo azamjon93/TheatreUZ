@@ -1,57 +1,72 @@
 ﻿@model TheatreUZ.Models.SpectaclePageModel
+@{
+    ViewBag.Title = "Spectacles";
+    int row = (int)Math.Ceiling((double)Model.PageInfo.PageSize / 3);
+    int col = row == 0 ? 0 : Model.PageInfo.PageSize / row;
+    int element = 0;
+}
 
 @Styles.Render("~/Content/Card.css")
 
+<div class="container-fluid">
 
-@using (Html.BeginForm("Index", "Spectacles", FormMethod.Post))
-{
-    foreach (var item in Model.Spectacles)
+    @for (int i = 0; i < row; i++)
     {
-        <div class="my-2 bg-white shadow-1 blue-hover" style="width: 30%; overflow: hidden; border-radius: 5px;">
-            <img src="https://seechicagodance.com/sites/default/files/styles/carousel_large/public/media/headlines/Lynn%20Colburn%20Shapiro/Desdemona%20and%20Othello%20%235.jpg?itok=ZzOMoXDa" class="d-block w-full">
-            <div class="px-2 py-2">
-                <p class="mb-0 small font-weight-medium text-uppercase mb-1 text-muted lts-2px">
-                    @item.Genre.Name
-                </p>
+        <div class="row">
+            @for (int j = 0; j < 3; j++)
+            {
+                <div class="col-4">
+                    <div class="my-2 bg-white shadow-1 blue-hover" style="width: 100%; height: 400px; overflow: hidden; border-radius: 5px;">
+                        <img src="~/Content/Images/scene2.jpg" class="d-block w-full">
+                        <div class="px-2 py-2">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="mb-0 small font-weight-medium text-uppercase mb-1 text-muted lts-2px">
+                                        @Model.Spectacles.ElementAt(element).Genre.Name
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="mb-0 small font-weight-medium text-uppercase mb-1 text-muted lts-2px" style="display: block; float: right">
+                                        @Model.Spectacles.ElementAt(element).PlayDate.ToString("dd-MM-yyyy")
+                                    </div>
+                                </div>
+                            </div>
 
-                <h1 class="ff-serif font-weight-normal text-black card-heading mt-0 mb-1" style="line-height: 1.25;">
-                    @item.Name
-                </h1>
-            </div>
+                            <h6 class="ff-serif font-weight-normal text-black card-heading mt-0 mb-1" style="line-height: 1.25;">
+                                @Model.Spectacles.ElementAt(element).Name
+                            </h6>
+                        </div>
 
-            <a href="#0" class="text-uppercase d-inline-block font-weight-medium lts-2px ml-2 mb-2 text-center styled-link">
-                Read More
-            </a>
+                        <div class="container-fluid card-container">
+                            <div class="row">
+                                <div class="col-6">
+                                    @Html.ActionLink("Read more", "SpectacleReadMore", new { id = Model.Spectacles.ElementAt(element++).ID }, new { @class = "text-uppercase d-inline-block font-weight-medium lts-2px ml-2 mb-2 text-center styled-link" })
+                                    @*<a href="#0" class="text-uppercase d-inline-block font-weight-medium lts-2px ml-2 mb-2 text-center styled-link">
+                                        Read More
+                                    </a>*@
+                                </div>
+                                <div class="col-6">
+                                    <a href="#0" class="text-uppercase d-inline-block font-weight-medium lts-2px ml-2 mb-2 text-center styled-link">
+                                        To book
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                if (element == Model.Spectacles.Count)
+                {
+                    i = Model.Spectacles.Count;
+                    break;
+                }
+            }
         </div>
     }
+</div>
 
-    <br />
-    <table cellpadding="0" cellspacing="0">
-        <tr>
-            @for (int i = 1; i <= Model.PageCount; i++)
-            {
-                <td>
-                    @if (i != Model.CurrentPageIndex)
-                    {
-                        <a href="javascript:PagerClick(@i);">@i</a>
-                    }
-                    else
-                    {
-                        <span>@i</span>
-                    }
-                </td>
-            }
-        </tr>
-    </table>
-    <input type="hidden" id="hfCurrentPageIndex" name="currentPageIndex" />
-}
+<br />
 
-<script type="text/javascript">
-    function PagerClick(index) {
-        document.getElementById("hfCurrentPageIndex").value = index;
-        document.forms[0].submit();
-    }
-</script>
-
-
-
+<center>
+    @Html.PageLinks(Model.PageInfo, s => Url.Action("Index", new { id = s }))
+</center>

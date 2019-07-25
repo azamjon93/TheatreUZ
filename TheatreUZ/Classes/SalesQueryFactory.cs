@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using TheatreUZ.Models;
 
@@ -10,7 +11,7 @@ namespace TheatreUZ
         {
             return new AllSalesQueryHandler();
         }
-
+        
         public static IQueryHandler<OneSaleQuery, Sale> Build(OneSaleQuery query)
         {
             return new OneSaleQueryHandler(query);
@@ -24,8 +25,9 @@ namespace TheatreUZ
             var db = new TheatreUZContext();
             return db.Sales.OrderByDescending(w => w.RegDate);
         }
+        
     }
-
+    
     public class OneSaleQueryHandler : IQueryHandler<OneSaleQuery, Sale>
     {
         private readonly OneSaleQuery query;
@@ -40,5 +42,6 @@ namespace TheatreUZ
             var db = new TheatreUZContext();
             return db.Sales.FirstOrDefault(s => s.ID == query.ID);
         }
+        
     }
 }

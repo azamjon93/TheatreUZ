@@ -23,10 +23,17 @@ namespace TheatreUZ.Models
 
     public class SpectaclePageModel
     {
+        public PageInfo PageInfo { get; set; }
+
         public List<Spectacle> Spectacles { get; set; }
-        
-        public int CurrentPageIndex { get; set; }
-        
-        public int PageCount { get; set; }
+    }
+
+    public class SpectacleReadModel
+    {
+        public Spectacle Spectacle { get; set; }
+
+        public string Image { get; set; }
+
+        public int Remain { get; set; }
     }
 }

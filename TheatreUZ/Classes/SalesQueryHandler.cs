@@ -8,7 +8,7 @@ namespace TheatreUZ
     {
 
     }
-
+    
     public class OneSaleQuery : IQuery<Sale>
     {
         public Guid ID { get; set; }

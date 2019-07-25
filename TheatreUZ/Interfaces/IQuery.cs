@@ -1,4 +1,6 @@
-﻿namespace TheatreUZ
+﻿using System;
+
+namespace TheatreUZ
 {
     public interface IQuery<out TResponse>
     {
@@ -9,4 +11,5 @@
     {
         TResponse Get();
     }
+    
 }
