@@ -95,11 +95,13 @@ namespace TheatreUZ.Controllers
         }
 
         [HttpPost]
-        public void LogOut()
+        public ActionResult LogOut()
         {
             Session["UserID"] = null;
             Session["UserName"] = null;
             Session["Role"] = null;
+
+            return RedirectToAction("Index", "Home");
         }
     }
 }

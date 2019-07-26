@@ -2,20 +2,24 @@
 using System.Linq;
 using System.Web.Mvc;
 using Newtonsoft.Json;
+using Ninject;
 using TheatreUZ.Models;
 
 namespace TheatreUZ.Controllers
 {
     public class StatesController : Controller
     {
+        IRepository repo;
+        public StatesController(IRepository r)
+        {
+            repo = r;
+        }
+
         public string AllStates()
         {
-            var handler = StateQueryHandlerFactory.Build(new AllStatesQuery());
-            var states = handler.Get();
-
             try
             {
-                return JsonConvert.SerializeObject(states.ToList(), Formatting.None, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+                return JsonConvert.SerializeObject(repo.GetAll(), Formatting.None, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
             }
             catch (Exception ex)
             {
@@ -25,16 +29,12 @@ namespace TheatreUZ.Controllers
 
         public ActionResult Index()
         {
-            var handler = StateQueryHandlerFactory.Build(new AllStatesQuery());
-
-            return View(handler.Get());
+            return View(repo.GetAll());
         }
 
         public ActionResult GetState(Guid id)
         {
-            var handler = StateQueryHandlerFactory.Build(new OneStateQuery(id));
-
-            return View(handler.Get());
+            return View((State)repo.GetOne(id));
         }
 
         public ActionResult AddState()
@@ -45,17 +45,13 @@ namespace TheatreUZ.Controllers
         [HttpPost]
         public ActionResult AddState(State item)
         {
-            var handler = StateSaveCommandHandlerFactory.Build(new StateSaveCommand(item));
-            var response = handler.Execute();
-
+            repo.Save(item);
             return RedirectToAction("Index");
         }
 
         public ActionResult EditState(Guid id)
         {
-            var handler = StateQueryHandlerFactory.Build(new OneStateQuery(id));
-
-            return View(handler.Get());
+            return View((State)repo.GetOne(id));
         }
 
         public ActionResult DeleteState(Guid id)
@@ -68,9 +64,7 @@ namespace TheatreUZ.Controllers
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteConfirmed(Guid id)
         {
-            var handler = StateDeleteCommandHandlerFactory.Build(new StateDeleteCommand(id));
-            var response = handler.Execute();
-
+            repo.Delete(id);
             return RedirectToAction("Index");
         }
 

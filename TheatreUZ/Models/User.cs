@@ -20,4 +20,11 @@ namespace TheatreUZ.Models
         public ICollection<Notification> Notifications { get; set; }
 
     }
+
+    public class UserAllInfoModel
+    {
+        public User User { get; set; }
+        public List<Sale> Sales { get; set; }
+
+    }
 }

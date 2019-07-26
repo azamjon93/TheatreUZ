@@ -10,7 +10,7 @@ $('.message a').click(function () {
 
 
 function sendPostRequest(url, postData, callback) {
-    alert(url);
+    //alert(url);
     $.ajax(url, {
         type: "POST",
         dataType: "text",

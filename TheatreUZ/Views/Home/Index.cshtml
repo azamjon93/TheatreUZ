@@ -40,15 +40,10 @@
                         <div class="container-fluid card-container">
                             <div class="row">
                                 <div class="col-6">
-                                    @Html.ActionLink("Read more", "SpectacleReadMore", new { id = Model.Spectacles.ElementAt(element++).ID }, new { @class = "text-uppercase d-inline-block font-weight-medium lts-2px ml-2 mb-2 text-center styled-link" })
-                                    @*<a href="#0" class="text-uppercase d-inline-block font-weight-medium lts-2px ml-2 mb-2 text-center styled-link">
-                                        Read More
-                                    </a>*@
+                                    @Html.ActionLink("Read more", "SpectacleReadMore", new { id = Model.Spectacles.ElementAt(element).ID }, new { @class = "text-uppercase d-inline-block font-weight-medium lts-2px ml-2 mb-2 text-center styled-link" })
                                 </div>
                                 <div class="col-6">
-                                    <a href="#0" class="text-uppercase d-inline-block font-weight-medium lts-2px ml-2 mb-2 text-center styled-link">
-                                        To book
-                                    </a>
+                                    @Html.ActionLink("To book", "ToBook", new { id = Model.Spectacles.ElementAt(element++).ID }, new { @class = "text-uppercase d-inline-block font-weight-medium lts-2px ml-2 mb-2 text-center styled-link" })
                                 </div>
                             </div>
                         </div>

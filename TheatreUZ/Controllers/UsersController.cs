@@ -37,6 +37,20 @@ namespace TheatreUZ.Controllers
             return View(handler.Get());
         }
 
+        public ActionResult UserAllInfo(Guid id)
+        {
+            var userHandler = UserQueryHandlerFactory.Build(new OneUserQuery(id));
+            var salesHandler = SaleQueryHandlerFactory.Build(new AllSalesQuery());
+
+            UserAllInfoModel model = new UserAllInfoModel
+            {
+                User = userHandler.Get(),
+                Sales = salesHandler.Get().Where(s => s.UserID == id && s.State.Name == "Active").ToList()
+            };
+
+            return View(model);
+        }
+
         public ActionResult AddUser()
         {
             var statesQueryHandler = StateQueryHandlerFactory.Build(new AllStatesQuery());
@@ -69,6 +83,20 @@ namespace TheatreUZ.Controllers
             ViewBag.RoleID = new SelectList(rolesQueryHandler.Get(), "ID", "Name", user.RoleID);
 
             return View(user);
+        }
+
+        public ActionResult DeleteSale(Guid id)
+        {
+            var sh = SaleDeleteCommandHandlerFactory.Build(new SaleDeleteCommand(id));
+
+            if (sh.Execute().Success)
+            {
+                var uid = (string)Session["UserID"];
+
+                return RedirectToAction("UserAllInfo", new { id = Guid.Parse(uid) });
+            }
+
+            return RedirectToAction("Index", "Home");
         }
 
         public ActionResult DeleteUser(Guid id)

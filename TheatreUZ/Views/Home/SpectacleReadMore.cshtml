@@ -2,8 +2,11 @@
 
 @{
     ViewBag.Title = "Spectacle details";
-}
 
+    var userID = (string)Session["UserID"];
+    var spectacleID = Model.Spectacle.ID;
+}
+@Scripts.Render("~/bundles/jquery")
 <div>
     <h4>Spectacle</h4>
     <hr />
@@ -71,11 +74,38 @@
         <dd>
             @Html.DisplayFor(model => model.Remain)
         </dd>
-
-
     </dl>
+
+    <p>
+        @if (Model.Remain == 0)
+        {
+            @Html.ActionLink("Sold out", "", null, new { @class = "btn btn-sm btn-outline-primary" })
+        }
+        else
+        {
+            @Html.ActionLink("To book", "ToBook", new { id = Model.Spectacle.ID }, new { @class = "btn btn-sm btn-primary" })
+        }
+
+        @Html.ActionLink("Back to main", "Index", null, new { @class = "btn btn-sm btn-primary" })
+    </p>
+
+    <div id="bookDiv" class="container-fluid" hidden="hidden">
+
+        @using (Html.BeginForm("ToBook", "Home", FormMethod.Post))
+        {
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label class="control-label col-md-2">Amount:</label>
+                    <div class="col-md-10">
+                        <input id="amount" type="number" value="2" class="form-control-sm" />
+                    </div>
+                    <div class="col-md-offset-2 col-md-10">
+                        <button id="confirm" class="btn btn-sm btn-success" style="margin-top:10px">Confirm</button>
+                    </div>
+                </div>
+            </div>
+        }
+
+
+    </div>
 </div>
-<p>
-    @Html.ActionLink("To book", "ToBook", new { id = Model.Spectacle.ID }, new { @class = "btn btn-sm btn-success" })
-    @Html.ActionLink("Back to main", "Index", null, new { @class = "btn btn-sm btn-primary" })
-</p>

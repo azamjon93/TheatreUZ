@@ -43,7 +43,14 @@ namespace TheatreUZ
 
                 if (item == null)
                 {
+                    item = command.Sale;
                     command.Sale.ID = Guid.NewGuid();
+                    command.Sale.User = db.Users.Where(u => u.ID == item.UserID).FirstOrDefault();
+                    command.Sale.Spectacle = db.Spectacles.Where(s => s.ID == item.SpectacleID).FirstOrDefault();
+                    command.Sale.State = db.States.Where(s => s.Name == "Active").FirstOrDefault();
+                    command.Sale.StateID = command.Sale.State.ID;
+                    command.Sale.RegDate = DateTime.Now;
+
                     db.Sales.Add(command.Sale);
                 }
                 else

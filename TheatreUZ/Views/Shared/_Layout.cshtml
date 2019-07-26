@@ -35,10 +35,10 @@
         </div>
 
         <div class="nav-links mr-auto">
-            <a href="1">Home</a>
-            <a href="#">About theatre</a>
-            <a href="#">Actors</a>
-            <a href="#">Contacts</a>
+            @Html.ActionLink("Home", "Index", "Home")
+            @Html.ActionLink("About theatre", "Index", "Home")
+            @Html.ActionLink("Actors", "Index", "Home")
+            @Html.ActionLink("Contacts", "Index", "Home")
         </div>
 
         <div class="nav-links ml-auto">
@@ -57,15 +57,15 @@
         <div class="footer-left">
             <h3>Central<span>theatre</span></h3>
             <p class="footer-links">
-                <a href="#">Home</a>
+
+                @Html.ActionLink("Home", "Index", "Home")
                 ·
-                <a href="#">Pricing</a>
+                @Html.ActionLink("About theatre", "Index", "Home")
                 ·
-                <a href="#">About</a>
+                @Html.ActionLink("Actors", "Index", "Home")
                 ·
-                <a href="#">Faq</a>
-                ·
-                <a href="#">Contact</a>
+                @Html.ActionLink("Contacts", "Index", "Home")
+                
             </p>
             <p class="footer-company-name">Central theatre of Uzbekistan &copy; 2019</p>
         </div>

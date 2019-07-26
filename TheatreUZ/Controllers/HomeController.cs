@@ -52,14 +52,46 @@ namespace TheatreUZ.Controllers
             return View(srm);
         }
 
-        public JsonResult ToBook(string sale)
+        public ActionResult ToBook(Guid id)
         {
-            JsonResult result = new JsonResult
+            var userID = (string)Session["UserID"];
+
+            if (userID == null || id == null)
             {
-                Data = true
+                return RedirectToAction("Index");
+            }
+
+            var spectacleHandler = SpectacleQueryHandlerFactory.Build(new OneSpectacleQuery(id));
+            var userHandler = UserQueryHandlerFactory.Build(new OneUserQuery(Guid.Parse(userID)));
+            
+            Sale sale = new Sale
+            {
+                ID = Guid.Empty,
+                SpectacleID = spectacleHandler.Get().ID,
+                Spectacle = spectacleHandler.Get(),
+                UserID = userHandler.Get().ID,
+                User = userHandler.Get(),
+                Amount = 2
             };
 
-            return result;
+            return View(sale);
+        }
+        
+        [HttpPost]
+        public ActionResult ToBook(Sale sale)
+        {
+            sale.ID = Guid.Empty;
+
+            var ticketsCount = SpectacleQueryHandlerFactory.Build(new OneSpectacleQuery(sale.SpectacleID)).Get().TicketsCount;
+            var allSales = SaleQueryHandlerFactory.Build(new AllSalesQuery()).Get().Where(s => s.SpectacleID == sale.SpectacleID && s.State.Name == "Active").Sum(a => a.Amount);
+
+            if (sale.Amount <= ticketsCount - allSales)
+            {
+                var saleSaveHandler = SaleSaveCommandHandlerFactory.Build(new SaleSaveCommand(sale));
+                var saveResult = saleSaveHandler.Execute();
+            }
+
+            return RedirectToAction("Index");
         }
 
         public ActionResult About()

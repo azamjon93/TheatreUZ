@@ -31,10 +31,14 @@ textarea {
 
 /* ***********   CUSTOM STYLES   **************** */
 
-.card-container{
-    position:absolute;
-    bottom:0;
-    margin-bottom:10px;
+.modal-backdrop.show{
+    z-index: 99;
+}
+
+.card-container {
+    position: absolute;
+    bottom: 0;
+    margin-bottom: 10px;
 }
 
 #mc {
