@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace TheatreUZ.Models
 {
@@ -7,8 +8,10 @@ namespace TheatreUZ.Models
         public Guid UserID { get; set; }
         public Guid SpectacleID { get; set; }
         public Guid StateID { get; set; }
-
+        
         public int Amount { get; set; }
+
+        [Display(Name = "Booked date")]
         public DateTime RegDate { get; set; }
 
         public virtual User User { get; set; }

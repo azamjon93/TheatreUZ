@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace TheatreUZ.Models
 {
@@ -7,9 +8,12 @@ namespace TheatreUZ.Models
     {
         public Guid StateID { get; set; }
 
+        [Display(Name = "Genre name")]
         public string Name { get; set; }
-        public DateTime RegDate { get; set; }
 
+        [Display(Name = "Reg. date")]
+        public DateTime RegDate { get; set; }
+        
         public virtual State State { get; set; }
 
         public ICollection<Spectacle> Spectacles { get; set; }

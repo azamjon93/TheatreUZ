@@ -6,33 +6,33 @@ namespace TheatreUZ
 {
     public static class UserSaveCommandHandlerFactory
     {
-        public static ICommandHandler<UserSaveCommand, CommandResponse> Build(UserSaveCommand command)
+        public static ICommandHandler<UserSaveCommand, CommandResponse> Build(UserSaveCommand command, TheatreUZContext dbContext)
         {
-            return new UserSaveCommandHandler(command);
+            return new UserSaveCommandHandler(command, dbContext);
         }
     }
 
     public static class UserDeleteCommandHandlerFactory
     {
-        public static ICommandHandler<UserDeleteCommand, CommandResponse> Build(UserDeleteCommand command)
+        public static ICommandHandler<UserDeleteCommand, CommandResponse> Build(UserDeleteCommand command, TheatreUZContext dbContext)
         {
-            return new UserDeleteCommandHandler(command);
+            return new UserDeleteCommandHandler(command, dbContext);
         }
     }
 
     public class UserSaveCommandHandler : ICommandHandler<UserSaveCommand, CommandResponse>
     {
         private readonly UserSaveCommand command;
+        TheatreUZContext db;
 
-        public UserSaveCommandHandler(UserSaveCommand command)
+        public UserSaveCommandHandler(UserSaveCommand command, TheatreUZContext dbContext)
         {
             this.command = command;
+            db = dbContext;
         }
 
         public CommandResponse Execute()
         {
-            var db = new TheatreUZContext();
-
             var response = new CommandResponse()
             {
                 Success = false
@@ -91,16 +91,16 @@ namespace TheatreUZ
     public class UserDeleteCommandHandler : ICommandHandler<UserDeleteCommand, CommandResponse>
     {
         private readonly UserDeleteCommand command;
+        TheatreUZContext db;
 
-        public UserDeleteCommandHandler(UserDeleteCommand command)
+        public UserDeleteCommandHandler(UserDeleteCommand command, TheatreUZContext dbContext)
         {
             this.command = command;
+            db = dbContext;
         }
 
         public CommandResponse Execute()
         {
-            var db = new TheatreUZContext();
-
             var response = new CommandResponse()
             {
                 Success = false

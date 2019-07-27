@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Mvc;
+using Newtonsoft.Json;
 using TheatreUZ.Models;
 
 namespace TheatreUZ.Controllers
@@ -87,18 +88,34 @@ namespace TheatreUZ.Controllers
             };
             return View(sale);
         }
-
-        [HttpPost]
-        public ActionResult ToBook(Sale sale)
+        
+        public JsonResult ToBookConfirm(string saleStr)
         {
-            sale.ID = Guid.Empty;
-            var ticketsCount = repo.GetSpectacle(sale.SpectacleID).TicketsCount;
-            var allSales = repo.GetAllSales().Where(s => s.SpectacleID == sale.SpectacleID && s.State.Name == "Active").Sum(a => a.Amount);
-            if (sale.Amount <= ticketsCount - allSales)
+            bool success = false;
+            string message = "There was an error";
+            try
             {
-                repo.SaveSale(sale);
+                Sale sale = JsonConvert.DeserializeObject<Sale>(saleStr);
+                sale.ID = Guid.Empty;
+                var ticketsCount = repo.GetSpectacle(sale.SpectacleID).TicketsCount;
+                var allSales = repo.GetAllSales().Where(s => s.SpectacleID == sale.SpectacleID && s.State.Name == "Active").Sum(a => a.Amount);
+                if (sale.Amount <= ticketsCount - allSales)
+                {
+                    repo.SaveSale(sale);
+                    success = true;
+                    message = "OK";
+                }
+                else
+                {
+                    message = string.Format("We have not {0} tickets. We have {1}", sale.Amount, ticketsCount - allSales);
+                }
             }
-            return RedirectToAction("Index");
+            catch
+            {
+
+            }
+
+            return Json(new { Success = success, Message = message }, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult About()

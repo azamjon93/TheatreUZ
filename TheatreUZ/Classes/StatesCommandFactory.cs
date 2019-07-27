@@ -5,33 +5,33 @@ namespace TheatreUZ
 {
     public static class StateSaveCommandHandlerFactory
     {
-        public static ICommandHandler<StateSaveCommand, CommandResponse> Build(StateSaveCommand command)
+        public static ICommandHandler<StateSaveCommand, CommandResponse> Build(StateSaveCommand command, TheatreUZContext dbContext)
         {
-            return new StateSaveCommandHandler(command);
+            return new StateSaveCommandHandler(command, dbContext);
         }
     }
 
     public static class StateDeleteCommandHandlerFactory
     {
-        public static ICommandHandler<StateDeleteCommand, CommandResponse> Build(StateDeleteCommand command)
+        public static ICommandHandler<StateDeleteCommand, CommandResponse> Build(StateDeleteCommand command, TheatreUZContext dbContext)
         {
-            return new StateDeleteCommandHandler(command);
+            return new StateDeleteCommandHandler(command, dbContext);
         }
     }
 
     public class StateSaveCommandHandler : ICommandHandler<StateSaveCommand, CommandResponse>
     {
         private readonly StateSaveCommand command;
+        TheatreUZContext db;
 
-        public StateSaveCommandHandler(StateSaveCommand command)
+        public StateSaveCommandHandler(StateSaveCommand command, TheatreUZContext dbContext)
         {
             this.command = command;
+            db = dbContext;
         }
 
         public CommandResponse Execute()
         {
-            var db = new TheatreUZContext();
-
             var response = new CommandResponse()
             {
                 Success = false
@@ -40,7 +40,7 @@ namespace TheatreUZ
             try
             {
                 var item = db.States.FirstOrDefault(w => w.ID == command.State.ID);
-                
+
                 if (item == null)
                 {
                     command.State.ID = Guid.NewGuid();
@@ -71,16 +71,16 @@ namespace TheatreUZ
     public class StateDeleteCommandHandler : ICommandHandler<StateDeleteCommand, CommandResponse>
     {
         private readonly StateDeleteCommand command;
+        TheatreUZContext db;
 
-        public StateDeleteCommandHandler(StateDeleteCommand command)
+        public StateDeleteCommandHandler(StateDeleteCommand command, TheatreUZContext dbContext)
         {
             this.command = command;
+            db = dbContext;
         }
 
         public CommandResponse Execute()
         {
-            var db = new TheatreUZContext();
-
             var response = new CommandResponse()
             {
                 Success = false

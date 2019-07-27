@@ -55,9 +55,7 @@ namespace TheatreUZ.Controllers
 
         public ActionResult DeleteState(Guid id)
         {
-            var handler = StateQueryHandlerFactory.Build(new OneStateQuery(id));
-
-            return View(handler.Get());
+            return View(repo.GetState(id));
         }
 
         [HttpPost, ActionName("Delete")]

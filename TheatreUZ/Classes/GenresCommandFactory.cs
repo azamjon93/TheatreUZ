@@ -5,33 +5,33 @@ namespace TheatreUZ
 {
     public static class GenreSaveCommandHandlerFactory
     {
-        public static ICommandHandler<GenreSaveCommand, CommandResponse> Build(GenreSaveCommand command)
+        public static ICommandHandler<GenreSaveCommand, CommandResponse> Build(GenreSaveCommand command, TheatreUZContext dbContext)
         {
-            return new GenreSaveCommandHandler(command);
+            return new GenreSaveCommandHandler(command, dbContext);
         }
     }
 
     public static class GenreDeleteCommandHandlerFactory
     {
-        public static ICommandHandler<GenreDeleteCommand, CommandResponse> Build(GenreDeleteCommand command)
+        public static ICommandHandler<GenreDeleteCommand, CommandResponse> Build(GenreDeleteCommand command, TheatreUZContext dbContext)
         {
-            return new GenreDeleteCommandHandler(command);
+            return new GenreDeleteCommandHandler(command, dbContext);
         }
     }
 
     public class GenreSaveCommandHandler : ICommandHandler<GenreSaveCommand, CommandResponse>
     {
         private readonly GenreSaveCommand command;
+        TheatreUZContext db;
 
-        public GenreSaveCommandHandler(GenreSaveCommand command)
+        public GenreSaveCommandHandler(GenreSaveCommand cmd, TheatreUZContext dbContext)
         {
-            this.command = command;
+            command = cmd;
+            db = dbContext;
         }
 
         public CommandResponse Execute()
         {
-            var db = new TheatreUZContext();
-
             var response = new CommandResponse()
             {
                 Success = false
@@ -48,10 +48,10 @@ namespace TheatreUZ
                 }
                 else
                 {
-                    db.Entry(item);
                     item.Name = command.Genre.Name;
                     item.StateID = command.Genre.StateID;
                     item.RegDate = command.Genre.RegDate;
+                    db.Entry(item).State = System.Data.Entity.EntityState.Modified;
                 }
 
                 db.SaveChanges();
@@ -72,16 +72,16 @@ namespace TheatreUZ
     public class GenreDeleteCommandHandler : ICommandHandler<GenreDeleteCommand, CommandResponse>
     {
         private readonly GenreDeleteCommand command;
+        TheatreUZContext db;
 
-        public GenreDeleteCommandHandler(GenreDeleteCommand command)
+        public GenreDeleteCommandHandler(GenreDeleteCommand cmd, TheatreUZContext dbContext)
         {
-            this.command = command;
+            command = cmd;
+            db = dbContext;
         }
 
         public CommandResponse Execute()
         {
-            var db = new TheatreUZContext();
-
             var response = new CommandResponse()
             {
                 Success = false

@@ -7,7 +7,8 @@
 
 .body-content {
     background-color: #e8faf3;
-    margin-top: 15px;
+    margin-top: 0px;
+    margin-bottom: -80px;
     padding: 15px;
     border-radius: 5px;
 }

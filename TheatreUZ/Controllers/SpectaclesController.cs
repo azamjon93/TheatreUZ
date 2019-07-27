@@ -2,6 +2,7 @@
 using System.Web.Mvc;
 using Newtonsoft.Json;
 using TheatreUZ.Models;
+using TheatreUZ.Security;
 
 namespace TheatreUZ.Controllers
 {
@@ -54,7 +55,7 @@ namespace TheatreUZ.Controllers
         {
             var spectacle = repo.GetSpectacle(id);
             ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name", spectacle.StateID);
-            ViewBag.GenreID = new SelectList(repo.GetAllRoles(), "ID", "Name", spectacle.GenreID);
+            ViewBag.GenreID = new SelectList(repo.GetAllGenres(), "ID", "Name", spectacle.GenreID);
             return View(spectacle);
         }
 

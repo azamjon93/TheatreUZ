@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace TheatreUZ.Models
 {
@@ -8,10 +9,19 @@ namespace TheatreUZ.Models
         public Guid GenreID { get; set; }
         public Guid StateID { get; set; }
 
+        [Display(Name = "Spectacle name")]
         public string Name { get; set; }
+
+        [Display(Name = "Cost of ticket")]
         public double Cost { get; set; }
+
+        [Display(Name = "Tickets count")]
         public int TicketsCount { get; set; }
+
+        [Display(Name = "Play date")]
         public DateTime PlayDate { get; set; }
+
+        [Display(Name = "Reg. date")]
         public DateTime RegDate { get; set; }
 
         public virtual Genre Genre { get; set; }
@@ -33,7 +43,7 @@ namespace TheatreUZ.Models
         public Spectacle Spectacle { get; set; }
 
         public string Image { get; set; }
-
+        
         public int Remain { get; set; }
     }
 }

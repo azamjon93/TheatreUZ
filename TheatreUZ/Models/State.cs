@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace TheatreUZ.Models
 {
     public class State : BaseModel
     {
+        [Display(Name = "State name")]
         public string Name { get; set; }
+
+        [Display(Name = "Reg. date")]
         public DateTime RegDate { get; set; }
 
         public ICollection<Role> Roles { get; set; }

@@ -89,16 +89,9 @@ namespace TheatreUZ.Controllers
 
         public ActionResult DeleteSale(Guid id)
         {
-            var sh = SaleDeleteCommandHandlerFactory.Build(new SaleDeleteCommand(id));
-
-            if (sh.Execute().Success)
-            {
-                var uid = (string)Session["UserID"];
-
-                return RedirectToAction("UserAllInfo", new { id = Guid.Parse(uid) });
-            }
-
-            return RedirectToAction("Index", "Home");
+            repo.DeleteSale(id);
+            var uid = (string)Session["UserID"];
+            return RedirectToAction("UserAllInfo", new { id = Guid.Parse(uid) });
         }
 
         protected override void Dispose(bool disposing)

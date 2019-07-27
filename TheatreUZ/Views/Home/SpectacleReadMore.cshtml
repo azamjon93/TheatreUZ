@@ -83,7 +83,7 @@
         }
         else
         {
-            @Html.ActionLink("To book", "ToBook", new { id = Model.Spectacle.ID }, new { @class = "btn btn-sm btn-primary" })
+            <button id="bookBtn" class="btn btn-sm btn-primary">To book</button>
         }
 
         @Html.ActionLink("Back to main", "Index", null, new { @class = "btn btn-sm btn-primary" })
@@ -91,21 +91,61 @@
 
     <div id="bookDiv" class="container-fluid" hidden="hidden">
 
-        @using (Html.BeginForm("ToBook", "Home", FormMethod.Post))
-        {
-            <div class="form-horizontal">
-                <div class="form-group">
-                    <label class="control-label col-md-2">Amount:</label>
-                    <div class="col-md-10">
-                        <input id="amount" type="number" value="2" class="form-control-sm" />
-                    </div>
-                    <div class="col-md-offset-2 col-md-10">
-                        <button id="confirm" class="btn btn-sm btn-success" style="margin-top:10px">Confirm</button>
-                    </div>
-                </div>
+        <div class="row">
+            <div class="col-3">
+                Amount
             </div>
-        }
+        </div>
 
+        <div class="row">
+            <div class="col-3">
+                <input id="amountTxt" type="number" class="form-control-sm" style="width:100%; margin-left:0" />
+            </div>
+            <div class="col-2">
+                <button id="confirmBtn" class="btn btn-sm btn-success" style="width:50%; margin-left:0;margin-top:10px">Confirm</button>
+            </div>
+        </div>
 
     </div>
 </div>
+
+<script type="text/javascript">
+    var hidden = true;
+    $('#bookBtn').click(function () {
+        if (hidden) {
+            $('#bookDiv').removeAttr('hidden');
+        }
+        else {
+            $('#bookDiv').attr('hidden', 'hidden');
+        }
+
+        hidden = !hidden;
+    });
+
+    $('#confirmBtn').click(function () {
+
+        var sale = {
+            UserID: '@Session["UserID"]',
+            SpectacleID: '@Model.Spectacle.ID',
+            Amount: $('#amountTxt').val()
+        }
+
+        $.ajax('@Url.Content("~/Home/ToBookConfirm")', {
+            type: "GET",
+            data: "saleStr=" + JSON.stringify(sale),
+            success: function (data) {
+                if (data.Success) {
+                    alert('Booking was successful');
+                    location.href = '@Url.Content("~/Home")';
+                }
+                else {
+                    alert(data.Message);
+                }
+            },
+            error: function () {
+                alert('Data sending error');
+            }
+        });
+
+    });
+</script>

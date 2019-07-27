@@ -2,6 +2,7 @@
 using System.Web.Mvc;
 using Newtonsoft.Json;
 using TheatreUZ.Models;
+using TheatreUZ.Security;
 
 namespace TheatreUZ.Controllers
 {
@@ -25,8 +26,7 @@ namespace TheatreUZ.Controllers
                 return ex.Message;
             }
         }
-
-        [Authorize]
+        
         public ActionResult Index()
         {
             return View(repo.GetAllGenres());

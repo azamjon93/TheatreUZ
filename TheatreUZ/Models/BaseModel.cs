@@ -8,6 +8,7 @@ namespace TheatreUZ.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Display(Name = "ID")]
         public Guid ID { get; set; }
     }
 }

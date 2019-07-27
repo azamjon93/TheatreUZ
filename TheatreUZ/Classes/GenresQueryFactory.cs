@@ -6,22 +6,28 @@ namespace TheatreUZ
 {
     public static class GenreQueryHandlerFactory
     {
-        public static IQueryHandler<AllGenresQuery, IEnumerable<Genre>> Build(AllGenresQuery query)
+        public static IQueryHandler<AllGenresQuery, IEnumerable<Genre>> Build(AllGenresQuery query, TheatreUZContext dbContext)
         {
-            return new AllGenresQueryHandler();
+            return new AllGenresQueryHandler(dbContext);
         }
 
-        public static IQueryHandler<OneGenreQuery, Genre> Build(OneGenreQuery query)
+        public static IQueryHandler<OneGenreQuery, Genre> Build(OneGenreQuery query, TheatreUZContext dbContext)
         {
-            return new OneGenreQueryHandler(query);
+            return new OneGenreQueryHandler(query, dbContext);
         }
     }
 
     public class AllGenresQueryHandler : IQueryHandler<AllGenresQuery, IEnumerable<Genre>>
     {
+        TheatreUZContext db;
+
+        public AllGenresQueryHandler(TheatreUZContext dbContext)
+        {
+            db = dbContext;
+        }
+
         public IEnumerable<Genre> Get()
         {
-            var db = new TheatreUZContext();
             return db.Genres.OrderBy(w => w.Name);
         }
     }
@@ -29,15 +35,16 @@ namespace TheatreUZ
     public class OneGenreQueryHandler : IQueryHandler<OneGenreQuery, Genre>
     {
         private readonly OneGenreQuery query;
+        TheatreUZContext db;
 
-        public OneGenreQueryHandler(OneGenreQuery query)
+        public OneGenreQueryHandler(OneGenreQuery query, TheatreUZContext dbContext)
         {
             this.query = query;
+            db = dbContext;
         }
 
         public Genre Get()
         {
-            var db = new TheatreUZContext();
             return db.Genres.FirstOrDefault(s => s.ID == query.ID);
         }
     }

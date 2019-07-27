@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace TheatreUZ.Models
 {
@@ -8,9 +9,14 @@ namespace TheatreUZ.Models
         public Guid RoleID { get; set; }
         public Guid StateID { get; set; }
 
+        [Display(Name = "User's full name")]
         public string Name { get; set; }
+
+        [Display(Name = "E-Mail address")]
         public string Email { get; set; }
         public string PasswordHash { get; set; }
+
+        [Display(Name = "Reg. date")]
         public DateTime RegDate { get; set; }
 
         public virtual Role Role { get; set; }

@@ -5,27 +5,29 @@ namespace TheatreUZ
 {
     public static class NotificationSaveCommandHandlerFactory
     {
-        public static ICommandHandler<NotificationSaveCommand, CommandResponse> Build(NotificationSaveCommand command)
+        public static ICommandHandler<NotificationSaveCommand, CommandResponse> Build(NotificationSaveCommand command, TheatreUZContext dbContext)
         {
-            return new NotificationSaveCommandHandler(command);
+            return new NotificationSaveCommandHandler(command, dbContext);
         }
     }
 
     public static class NotificationDeleteCommandHandlerFactory
     {
-        public static ICommandHandler<NotificationDeleteCommand, CommandResponse> Build(NotificationDeleteCommand command)
+        public static ICommandHandler<NotificationDeleteCommand, CommandResponse> Build(NotificationDeleteCommand command, TheatreUZContext dbContext)
         {
-            return new NotificationDeleteCommandHandler(command);
+            return new NotificationDeleteCommandHandler(command, dbContext);
         }
     }
 
     public class NotificationSaveCommandHandler : ICommandHandler<NotificationSaveCommand, CommandResponse>
     {
         private readonly NotificationSaveCommand command;
+        TheatreUZContext db;
 
-        public NotificationSaveCommandHandler(NotificationSaveCommand command)
+        public NotificationSaveCommandHandler(NotificationSaveCommand command, TheatreUZContext dbContext)
         {
             this.command = command;
+            db = dbContext;
         }
 
         public CommandResponse Execute()
@@ -73,10 +75,12 @@ namespace TheatreUZ
     public class NotificationDeleteCommandHandler : ICommandHandler<NotificationDeleteCommand, CommandResponse>
     {
         private readonly NotificationDeleteCommand command;
+        TheatreUZContext db;
 
-        public NotificationDeleteCommandHandler(NotificationDeleteCommand command)
+        public NotificationDeleteCommandHandler(NotificationDeleteCommand command, TheatreUZContext dbContext)
         {
             this.command = command;
+            db = dbContext;
         }
 
         public CommandResponse Execute()
