@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Web.Mvc;
 using Newtonsoft.Json;
 using TheatreUZ.Models;
@@ -8,14 +7,18 @@ namespace TheatreUZ.Controllers
 {
     public class SalesController : Controller
     {
+        IRepository repo;
+
+        public SalesController(IRepository r)
+        {
+            repo = r;
+        }
+
         public string AllSales()
         {
-            var handler = SaleQueryHandlerFactory.Build(new AllSalesQuery());
-            var sales = handler.Get();
-
             try
             {
-                return JsonConvert.SerializeObject(sales.ToList(), Formatting.None, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+                return JsonConvert.SerializeObject(repo.GetAllSales(), Formatting.None, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
             }
             catch (Exception ex)
             {
@@ -25,69 +28,47 @@ namespace TheatreUZ.Controllers
 
         public ActionResult Index()
         {
-            var handler = SaleQueryHandlerFactory.Build(new AllSalesQuery());
-
-            return View(handler.Get());
+            return View(repo.GetAllSales());
         }
 
         public ActionResult GetSale(Guid id)
         {
-            var handler = SaleQueryHandlerFactory.Build(new OneSaleQuery(id));
-
-            return View(handler.Get());
+            return View(repo.GetSale(id));
         }
 
         public ActionResult AddSale()
         {
-            var usersQueryHandler = UserQueryHandlerFactory.Build(new AllUsersQuery());
-            var spectaclesQueryHandler = SpectacleQueryHandlerFactory.Build(new AllSpectaclesQuery());
-            var statesQueryHandler = StateQueryHandlerFactory.Build(new AllStatesQuery());
-
-            ViewBag.UserID = new SelectList(usersQueryHandler.Get(), "ID", "Name");
-            ViewBag.SpectacleID = new SelectList(spectaclesQueryHandler.Get(), "ID", "Name");
-            ViewBag.StateID = new SelectList(statesQueryHandler.Get(), "ID", "Name");
-
+            ViewBag.UserID = new SelectList(repo.GetAllUsers(), "ID", "Name");
+            ViewBag.SpectacleID = new SelectList(repo.GetAllSpectacles(), "ID", "Name");
+            ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name");
             return View();
         }
 
         [HttpPost]
         public ActionResult AddSale(Sale item)
         {
-            var handler = SaleSaveCommandHandlerFactory.Build(new SaleSaveCommand(item));
-            var response = handler.Execute();
-
+            repo.SaveSale(item);
             return RedirectToAction("Index");
         }
 
         public ActionResult EditSale(Guid id)
         {
-            var saleQueryHandler = SaleQueryHandlerFactory.Build(new OneSaleQuery(id));
-            var spectaclesQueryHandler = SpectacleQueryHandlerFactory.Build(new AllSpectaclesQuery());
-            var statesQueryHandler = StateQueryHandlerFactory.Build(new AllStatesQuery());
-            var usersQueryHandler = UserQueryHandlerFactory.Build(new AllUsersQuery());
-
-            var notification = saleQueryHandler.Get();
-
-            ViewBag.UserID = new SelectList(usersQueryHandler.Get(), "ID", "Name", notification.UserID);
-            ViewBag.SpectacleID = new SelectList(spectaclesQueryHandler.Get(), "ID", "Name", notification.SpectacleID);
-            ViewBag.StateID = new SelectList(statesQueryHandler.Get(), "ID", "Name", notification.StateID);
-
-            return View(notification);
+            var sale = repo.GetSale(id);
+            ViewBag.UserID = new SelectList(repo.GetAllUsers(), "ID", "Name", sale.UserID);
+            ViewBag.SpectacleID = new SelectList(repo.GetAllSpectacles(), "ID", "Name", sale.SpectacleID);
+            ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name", sale.StateID);
+            return View(sale);
         }
 
         public ActionResult DeleteSale(Guid id)
         {
-            var handler = SaleQueryHandlerFactory.Build(new OneSaleQuery(id));
-
-            return View(handler.Get());
+            return View(repo.GetSale(id));
         }
 
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteConfirmed(Guid id)
         {
-            var handler = SaleDeleteCommandHandlerFactory.Build(new SaleDeleteCommand(id));
-            var response = handler.Execute();
-
+            repo.DeleteSale(id);
             return RedirectToAction("Index");
         }
 

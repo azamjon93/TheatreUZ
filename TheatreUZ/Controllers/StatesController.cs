@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Web.Mvc;
 using Newtonsoft.Json;
-using Ninject;
 using TheatreUZ.Models;
 
 namespace TheatreUZ.Controllers
@@ -10,6 +8,7 @@ namespace TheatreUZ.Controllers
     public class StatesController : Controller
     {
         IRepository repo;
+
         public StatesController(IRepository r)
         {
             repo = r;
@@ -19,7 +18,7 @@ namespace TheatreUZ.Controllers
         {
             try
             {
-                return JsonConvert.SerializeObject(repo.GetAll(), Formatting.None, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+                return JsonConvert.SerializeObject(repo.GetAllStates(), Formatting.None, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
             }
             catch (Exception ex)
             {
@@ -29,12 +28,12 @@ namespace TheatreUZ.Controllers
 
         public ActionResult Index()
         {
-            return View(repo.GetAll());
+            return View(repo.GetAllStates());
         }
 
         public ActionResult GetState(Guid id)
         {
-            return View((State)repo.GetOne(id));
+            return View(repo.GetState(id));
         }
 
         public ActionResult AddState()
@@ -45,13 +44,13 @@ namespace TheatreUZ.Controllers
         [HttpPost]
         public ActionResult AddState(State item)
         {
-            repo.Save(item);
+            repo.SaveState(item);
             return RedirectToAction("Index");
         }
 
         public ActionResult EditState(Guid id)
         {
-            return View((State)repo.GetOne(id));
+            return View(repo.GetState(id));
         }
 
         public ActionResult DeleteState(Guid id)
@@ -64,7 +63,7 @@ namespace TheatreUZ.Controllers
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteConfirmed(Guid id)
         {
-            repo.Delete(id);
+            repo.DeleteState(id);
             return RedirectToAction("Index");
         }
 

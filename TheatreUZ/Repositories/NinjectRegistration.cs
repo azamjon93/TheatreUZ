@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Ninject.Modules;
+﻿using Ninject.Modules;
 
 namespace TheatreUZ
 {
@@ -10,7 +6,7 @@ namespace TheatreUZ
     {
         public override void Load()
         {
-            Bind<IRepository>().To<StateRepository>();
+            Bind<IRepository>().To<MSSQLRepository>();
         }
     }
 }

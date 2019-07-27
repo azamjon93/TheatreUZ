@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Web.Mvc;
 using Newtonsoft.Json;
 using TheatreUZ.Models;
@@ -8,14 +7,18 @@ namespace TheatreUZ.Controllers
 {
     public class GenresController : Controller
     {
+        IRepository repo;
+
+        public GenresController(IRepository r)
+        {
+            repo = r;
+        }
+
         public string AllGenres()
         {
-            var handler = GenreQueryHandlerFactory.Build(new AllGenresQuery());
-            var genres = handler.Get();
-
             try
             {
-                return JsonConvert.SerializeObject(genres.ToList(), Formatting.None, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+                return JsonConvert.SerializeObject(repo.GetAllGenres(), Formatting.None, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
             }
             catch (Exception ex)
             {
@@ -26,61 +29,44 @@ namespace TheatreUZ.Controllers
         [Authorize]
         public ActionResult Index()
         {
-            var handler = GenreQueryHandlerFactory.Build(new AllGenresQuery());
-
-            return View(handler.Get());
+            return View(repo.GetAllGenres());
         }
 
         public ActionResult GetGenre(Guid id)
         {
-            var handler = GenreQueryHandlerFactory.Build(new OneGenreQuery(id));
-
-            return View(handler.Get());
+            return View(repo.GetGenre(id));
         }
 
         public ActionResult AddGenre()
         {
-            var handler = StateQueryHandlerFactory.Build(new AllStatesQuery());
-            ViewBag.StateID = new SelectList(handler.Get(), "ID", "Name");
-
+            ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name");
             return View();
         }
 
         [HttpPost]
         public ActionResult AddGenre(Genre item)
         {
-            var handler = GenreSaveCommandHandlerFactory.Build(new GenreSaveCommand(item));
-            var response = handler.Execute();
-
+            repo.SaveGenre(item);
             return RedirectToAction("Index");
         }
 
         public ActionResult EditGenre(Guid id)
         {
-            var genreQueryHandler = GenreQueryHandlerFactory.Build(new OneGenreQuery(id));
-            var StatesQueryHandler = StateQueryHandlerFactory.Build(new AllStatesQuery());
-
-            var genre = genreQueryHandler.Get();
-            var states = StatesQueryHandler.Get();
-
-            ViewBag.StateID = new SelectList(states, "ID", "Name", genre.StateID);
-
+            var genre = repo.GetGenre(id);
+            ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name", genre.StateID);
+            ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name", genre.StateID);
             return View(genre);
         }
 
         public ActionResult DeleteGenre(Guid id)
         {
-            var handler = GenreQueryHandlerFactory.Build(new OneGenreQuery(id));
-
-            return View(handler.Get());
+            return View(repo.GetGenre(id));
         }
 
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteConfirmed(Guid id)
         {
-            var handler = GenreDeleteCommandHandlerFactory.Build(new GenreDeleteCommand(id));
-            var response = handler.Execute();
-
+            repo.DeleteGenre(id);
             return RedirectToAction("Index");
         }
 

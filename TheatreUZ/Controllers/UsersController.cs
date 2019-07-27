@@ -8,14 +8,18 @@ namespace TheatreUZ.Controllers
 {
     public class UsersController : Controller
     {
+        IRepository repo;
+
+        public UsersController(IRepository r)
+        {
+            repo = r;
+        }
+
         public string AllUsers()
         {
-            var handler = UserQueryHandlerFactory.Build(new AllUsersQuery());
-            var users = handler.Get();
-
             try
             {
-                return JsonConvert.SerializeObject(users.ToList(), Formatting.None, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+                return JsonConvert.SerializeObject(repo.GetAllUsers(), Formatting.None, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
             }
             catch (Exception ex)
             {
@@ -25,64 +29,62 @@ namespace TheatreUZ.Controllers
 
         public ActionResult Index()
         {
-            var handler = UserQueryHandlerFactory.Build(new AllUsersQuery());
-
-            return View(handler.Get());
+            return View(repo.GetAllUsers());
         }
 
         public ActionResult GetUser(Guid id)
         {
-            var handler = UserQueryHandlerFactory.Build(new OneUserQuery(id));
-
-            return View(handler.Get());
-        }
-
-        public ActionResult UserAllInfo(Guid id)
-        {
-            var userHandler = UserQueryHandlerFactory.Build(new OneUserQuery(id));
-            var salesHandler = SaleQueryHandlerFactory.Build(new AllSalesQuery());
-
-            UserAllInfoModel model = new UserAllInfoModel
-            {
-                User = userHandler.Get(),
-                Sales = salesHandler.Get().Where(s => s.UserID == id && s.State.Name == "Active").ToList()
-            };
-
-            return View(model);
+            return View(repo.GetUser(id));
         }
 
         public ActionResult AddUser()
         {
-            var statesQueryHandler = StateQueryHandlerFactory.Build(new AllStatesQuery());
-            var rolesQueryHandler = RoleQueryHandlerFactory.Build(new AllRolesQuery());
-
-            ViewBag.StateID = new SelectList(statesQueryHandler.Get(), "ID", "Name");
-            ViewBag.RoleID = new SelectList(rolesQueryHandler.Get(), "ID", "Name");
-
+            ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name");
+            ViewBag.RoleID = new SelectList(repo.GetAllRoles(), "ID", "Name");
             return View();
         }
 
         [HttpPost]
         public ActionResult AddUser(User item)
         {
-            var handler = UserSaveCommandHandlerFactory.Build(new UserSaveCommand(item));
-            var response = handler.Execute();
-
+            repo.SaveUser(item);
             return RedirectToAction("Index");
         }
 
         public ActionResult EditUser(Guid id)
         {
-            var userQueryHandler = UserQueryHandlerFactory.Build(new OneUserQuery(id));
-            var rolesQueryHandler = RoleQueryHandlerFactory.Build(new AllRolesQuery());
-            var statesQueryHandler = StateQueryHandlerFactory.Build(new AllStatesQuery());
+            var user = repo.GetUser(id);
 
-            var user = userQueryHandler.Get();
-
-            ViewBag.StateID = new SelectList(statesQueryHandler.Get(), "ID", "Name", user.StateID);
-            ViewBag.RoleID = new SelectList(rolesQueryHandler.Get(), "ID", "Name", user.RoleID);
+            ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name", user.StateID);
+            ViewBag.RoleID = new SelectList(repo.GetAllRoles(), "ID", "Name", user.RoleID);
 
             return View(user);
+        }
+
+        public ActionResult DeleteUser(Guid id)
+        {
+            return View(repo.GetUser(id));
+        }
+
+        [HttpPost, ActionName("Delete")]
+        public ActionResult DeleteConfirmed(Guid id)
+        {
+            repo.DeleteUser(id);
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult UserAllInfo(Guid id)
+        {
+            var user = repo.GetUser(id);
+            var sales = repo.GetAllSales();
+
+            UserAllInfoModel model = new UserAllInfoModel
+            {
+                User = user,
+                Sales = sales.Where(s => s.UserID == id && s.State.Name == "Active").ToList()
+            };
+
+            return View(model);
         }
 
         public ActionResult DeleteSale(Guid id)
@@ -97,22 +99,6 @@ namespace TheatreUZ.Controllers
             }
 
             return RedirectToAction("Index", "Home");
-        }
-
-        public ActionResult DeleteUser(Guid id)
-        {
-            var handler = UserQueryHandlerFactory.Build(new OneUserQuery(id));
-
-            return View(handler.Get());
-        }
-
-        [HttpPost, ActionName("Delete")]
-        public ActionResult DeleteConfirmed(Guid id)
-        {
-            var handler = UserDeleteCommandHandlerFactory.Build(new UserDeleteCommand(id));
-            var response = handler.Execute();
-
-            return RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Web.Mvc;
 using Newtonsoft.Json;
 using TheatreUZ.Models;
@@ -8,14 +7,18 @@ namespace TheatreUZ.Controllers
 {
     public class NotificationsController : Controller
     {
+        IRepository repo;
+
+        public NotificationsController(IRepository r)
+        {
+            repo = r;
+        }
+
         public string AllNotifications()
         {
-            var handler = NotificationQueryHandlerFactory.Build(new AllNotificationsQuery());
-            var notifications = handler.Get();
-
             try
             {
-                return JsonConvert.SerializeObject(notifications.ToList(), Formatting.None, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+                return JsonConvert.SerializeObject(repo.GetAllNotifications(), Formatting.None, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
             }
             catch (Exception ex)
             {
@@ -25,65 +28,45 @@ namespace TheatreUZ.Controllers
 
         public ActionResult Index()
         {
-            var handler = NotificationQueryHandlerFactory.Build(new AllNotificationsQuery());
-
-            return View(handler.Get());
+            return View(repo.GetAllNotifications());
         }
 
         public ActionResult GetNotification(Guid id)
         {
-            var handler = NotificationQueryHandlerFactory.Build(new OneNotificationQuery(id));
-
-            return View(handler.Get());
+            return View(repo.GetNotification(id));
         }
 
         public ActionResult AddNotification()
         {
-            var statesQueryHandler = StateQueryHandlerFactory.Build(new AllStatesQuery());
-            var usersQueryHandler = UserQueryHandlerFactory.Build(new AllUsersQuery());
-
-            ViewBag.StateID = new SelectList(statesQueryHandler.Get(), "ID", "Name");
-            ViewBag.UserID = new SelectList(usersQueryHandler.Get(), "ID", "Name");
-
+            ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name");
+            ViewBag.UserID = new SelectList(repo.GetAllUsers(), "ID", "Name");
             return View();
         }
 
         [HttpPost]
         public ActionResult AddNotification(Notification item)
         {
-            var handler = NotificationSaveCommandHandlerFactory.Build(new NotificationSaveCommand(item));
-            var response = handler.Execute();
-
+            repo.SaveNotification(item);
             return RedirectToAction("Index");
         }
 
         public ActionResult EditNotification(Guid id)
         {
-            var notificationQueryHandler = NotificationQueryHandlerFactory.Build(new OneNotificationQuery(id));
-            var statesQueryHandler = StateQueryHandlerFactory.Build(new AllStatesQuery());
-            var usersQueryHandler = UserQueryHandlerFactory.Build(new AllUsersQuery());
-
-            var notification = notificationQueryHandler.Get();
-
-            ViewBag.StateID = new SelectList(statesQueryHandler.Get(), "ID", "Name", notification.StateID);
-            ViewBag.UserID = new SelectList(usersQueryHandler.Get(), "ID", "Name", notification.UserID);
-
+            var notification = repo.GetNotification(id);
+            ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name", notification.StateID);
+            ViewBag.UserID = new SelectList(repo.GetAllUsers(), "ID", "Name", notification.UserID);
             return View(notification);
         }
 
         public ActionResult DeleteNotification(Guid id)
         {
-            var handler = NotificationQueryHandlerFactory.Build(new OneNotificationQuery(id));
-
-            return View(handler.Get());
+            return View(repo.GetNotification(id));
         }
 
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteConfirmed(Guid id)
         {
-            var handler = NotificationDeleteCommandHandlerFactory.Build(new NotificationDeleteCommand(id));
-            var response = handler.Execute();
-
+            repo.DeleteNotification(id);
             return RedirectToAction("Index");
         }
 

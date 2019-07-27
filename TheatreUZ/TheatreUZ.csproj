@@ -174,7 +174,7 @@
     <Compile Include="Classes\SalesQueryHandler.cs" />
     <Compile Include="Repositories\IRepository.cs" />
     <Compile Include="Repositories\NinjectRegistration.cs" />
-    <Compile Include="Repositories\StateRepository.cs" />
+    <Compile Include="Repositories\MSSQLRepository.cs" />
     <Compile Include="Security\Security.cs" />
     <Compile Include="Classes\SpectacleDeleteCommand.cs" />
     <Compile Include="Classes\SpectacleSaveCommand.cs" />

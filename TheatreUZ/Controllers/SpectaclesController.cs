@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Web.Mvc;
 using Newtonsoft.Json;
 using TheatreUZ.Models;
@@ -8,14 +7,18 @@ namespace TheatreUZ.Controllers
 {
     public class SpectaclesController : Controller
     {
+        IRepository repo;
+
+        public SpectaclesController(IRepository r)
+        {
+            repo = r;
+        }
+
         public string AllSpectacles()
         {
-            var handler = SpectacleQueryHandlerFactory.Build(new AllSpectaclesQuery());
-            var spectacles = handler.Get();
-
             try
             {
-                return JsonConvert.SerializeObject(spectacles.ToList(), Formatting.None, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+                return JsonConvert.SerializeObject(repo.GetAllSpectacles(), Formatting.None, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
             }
             catch (Exception ex)
             {
@@ -25,64 +28,45 @@ namespace TheatreUZ.Controllers
 
         public ActionResult Index()
         {
-            var allSpectaclesHandler = SpectacleQueryHandlerFactory.Build(new AllSpectaclesQuery());
-            return View(allSpectaclesHandler.Get());
+            return View(repo.GetAllSpectacles());
         }
-        
+
         public ActionResult GetSpectacle(Guid id)
         {
-            var handler = SpectacleQueryHandlerFactory.Build(new OneSpectacleQuery(id));
-
-            return View(handler.Get());
+            return View(repo.GetSpectacle(id));
         }
 
         public ActionResult AddSpectacle()
         {
-            var statesQueryHandler = StateQueryHandlerFactory.Build(new AllStatesQuery());
-            var genresQueryHandler = GenreQueryHandlerFactory.Build(new AllGenresQuery());
-
-            ViewBag.StateID = new SelectList(statesQueryHandler.Get(), "ID", "Name");
-            ViewBag.GenreID = new SelectList(genresQueryHandler.Get(), "ID", "Name");
-
+            ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name");
+            ViewBag.GenreID = new SelectList(repo.GetAllGenres(), "ID", "Name");
             return View();
         }
 
         [HttpPost]
         public ActionResult AddSpectacle(Spectacle item)
         {
-            var handler = SpectacleSaveCommandHandlerFactory.Build(new SpectacleSaveCommand(item));
-            var response = handler.Execute();
-
+            repo.SaveSpectacle(item);
             return RedirectToAction("Index");
         }
 
         public ActionResult EditSpectacle(Guid id)
         {
-            var spectacleQueryHandler = SpectacleQueryHandlerFactory.Build(new OneSpectacleQuery(id));
-            var statesQueryHandler = StateQueryHandlerFactory.Build(new AllStatesQuery());
-            var genresQueryHandler = GenreQueryHandlerFactory.Build(new AllGenresQuery());
-
-            var spectacle = spectacleQueryHandler.Get();
-
-            ViewBag.StateID = new SelectList(statesQueryHandler.Get(), "ID", "Name", spectacle.StateID);
-            ViewBag.GenreID = new SelectList(genresQueryHandler.Get(), "ID", "Name", spectacle.GenreID);
-
+            var spectacle = repo.GetSpectacle(id);
+            ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name", spectacle.StateID);
+            ViewBag.GenreID = new SelectList(repo.GetAllRoles(), "ID", "Name", spectacle.GenreID);
             return View(spectacle);
         }
 
         public ActionResult DeleteSpectacle(Guid id)
         {
-            var handler = SpectacleQueryHandlerFactory.Build(new OneSpectacleQuery(id));
-
-            return View(handler.Get());
+            return View(repo.GetSpectacle(id));
         }
 
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteConfirmed(Guid id)
         {
-            var handler = SpectacleDeleteCommandHandlerFactory.Build(new SpectacleDeleteCommand(id));
-            var response = handler.Execute();
-
+            repo.DeleteSpectacle(id);
             return RedirectToAction("Index");
         }
 

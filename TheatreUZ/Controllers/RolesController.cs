@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Web.Mvc;
 using Newtonsoft.Json;
 using TheatreUZ.Models;
@@ -8,14 +7,18 @@ namespace TheatreUZ.Controllers
 {
     public class RolesController : Controller
     {
+        IRepository repo;
+
+        public RolesController(IRepository r)
+        {
+            repo = r;
+        }
+
         public string AllRoles()
         {
-            var handler = RoleQueryHandlerFactory.Build(new AllRolesQuery());
-            var roles = handler.Get();
-
             try
             {
-                return JsonConvert.SerializeObject(roles.ToList(), Formatting.None, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+                return JsonConvert.SerializeObject(repo.GetAllRoles(), Formatting.None, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
             }
             catch (Exception ex)
             {
@@ -25,61 +28,43 @@ namespace TheatreUZ.Controllers
 
         public ActionResult Index()
         {
-            var handler = RoleQueryHandlerFactory.Build(new AllRolesQuery());
-
-            return View(handler.Get());
+            return View(repo.GetAllRoles());
         }
 
         public ActionResult GetRole(Guid id)
         {
-            var handler = RoleQueryHandlerFactory.Build(new OneRoleQuery(id));
-
-            return View(handler.Get());
+            return View(repo.GetRole(id));
         }
 
         public ActionResult AddRole()
         {
-            var handler = StateQueryHandlerFactory.Build(new AllStatesQuery());
-            ViewBag.StateID = new SelectList(handler.Get(), "ID", "Name");
-
+            ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name");
             return View();
         }
 
         [HttpPost]
         public ActionResult AddRole(Role item)
         {
-            var handler = RoleSaveCommandHandlerFactory.Build(new RoleSaveCommand(item));
-            var response = handler.Execute();
-
+            repo.SaveRole(item);
             return RedirectToAction("Index");
         }
 
         public ActionResult EditRole(Guid id)
         {
-            var roleQueryHandler = RoleQueryHandlerFactory.Build(new OneRoleQuery(id));
-            var role = roleQueryHandler.Get();
-
-            var StatesQueryHandler = StateQueryHandlerFactory.Build(new AllStatesQuery());
-            var states = StatesQueryHandler.Get();
-
-            ViewBag.StateID = new SelectList(states, "ID", "Name", role.StateID);
-
+            var role = repo.GetRole(id);
+            ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name", role.StateID);
             return View(role);
         }
 
         public ActionResult DeleteRole(Guid id)
         {
-            var handler = RoleQueryHandlerFactory.Build(new OneRoleQuery(id));
-
-            return View(handler.Get());
+            return View(repo.GetRole(id));
         }
 
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteConfirmed(Guid id)
         {
-            var handler = RoleDeleteCommandHandlerFactory.Build(new RoleDeleteCommand(id));
-            var response = handler.Execute();
-
+            repo.DeleteRole(id);
             return RedirectToAction("Index");
         }
 

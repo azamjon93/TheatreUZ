@@ -8,6 +8,13 @@ namespace TheatreUZ.Controllers
 {
     public class AuthController : Controller
     {
+        IRepository repo;
+
+        public AuthController(IRepository r)
+        {
+            repo = r;
+        }
+
         public ActionResult Index()
         {
             return View();
@@ -16,25 +23,23 @@ namespace TheatreUZ.Controllers
         [HttpPost]
         public ActionResult LogIn(string userStr)
         {
-            JsonResult result = new JsonResult();
-
             User user = null;
+            JsonResult result = new JsonResult();
 
             try
             {
                 user = JsonConvert.DeserializeObject<User>(userStr);
             }
-            catch (Exception)
+            catch
             {
 
             }
 
-            var userHandler = UserQueryHandlerFactory.Build(new OneUserByEmailQuery(user.Email));
-
             User dbUser = null;
+
             try
             {
-                dbUser = userHandler.Get();
+                dbUser = repo.GetUserByEmail(user.Email);
             }
             catch (Exception)
             {
@@ -80,14 +85,17 @@ namespace TheatreUZ.Controllers
 
             if (user != null)
             {
-                var handler = UserSaveCommandHandlerFactory.Build(new UserSaveCommand(user));
-                var response = handler.Execute();
-
-                if (response.Success)
+                try
                 {
+                    var response = repo.SaveUser(user);
+
                     Session["UserID"] = response.ID.ToString();
                     Session["UserName"] = response.ResponseObjects.ElementAt(0) as string;
                     Session["Role"] = (response.ResponseObjects.ElementAt(1) as Role).Name;
+                }
+                catch
+                {
+
                 }
             }
 
