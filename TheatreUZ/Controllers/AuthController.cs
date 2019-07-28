@@ -3,6 +3,7 @@ using System.Linq;
 using System.Web.Mvc;
 using Newtonsoft.Json;
 using TheatreUZ.Models;
+using TheatreUZ.Security;
 
 namespace TheatreUZ.Controllers
 {
@@ -19,59 +20,51 @@ namespace TheatreUZ.Controllers
         {
             return View();
         }
-
-        [HttpPost]
-        public ActionResult LogIn(string userStr)
+        
+        public JsonResult LogIn(string userStr)
         {
-            User user = null;
-            JsonResult result = new JsonResult();
-
+            bool success = false;
+            string message = "There was an error";
+            
             try
             {
-                user = JsonConvert.DeserializeObject<User>(userStr);
+                User user = JsonConvert.DeserializeObject<User>(userStr);
+                User dbUser = repo.GetUserByEmail(user.Email);
+                if (dbUser == null)
+                {
+                    message = "User with e-mail/password was not found";
+                }
+                else
+                {
+                    if (TAuth.Hash(user.PasswordHash) == dbUser.PasswordHash)
+                    {
+                        Session["User"] = dbUser;
+                        Session["UserID"] = dbUser.ID.ToString();
+                        Session["UserName"] = dbUser.Name;
+                        Session["Role"] = dbUser.Role.Name;
+
+                        success = true;
+                        message = "OK";
+                    }
+                    else
+                    {
+                        message = "User with e-mail/password was not found";
+                    }
+                }
             }
             catch
             {
 
             }
-
-            User dbUser = null;
-
-            try
-            {
-                dbUser = repo.GetUserByEmail(user.Email);
-            }
-            catch (Exception)
-            {
-
-            }
-
-            if (dbUser == null)
-            {
-                result.Data = "404";
-            }
-            else
-            {
-                if (OwnSecurity.Hash(user.PasswordHash) == dbUser.PasswordHash)
-                {
-                    result.Data = "200";
-
-                    Session["UserID"] = dbUser.ID.ToString();
-                    Session["UserName"] = dbUser.Name;
-                    Session["Role"] = dbUser.Role.Name;
-                }
-                else
-                {
-                    result.Data = "404";
-                }
-            }
-
-            return RedirectToAction("Index", "Home");
+            
+            return Json(new { Success = success, Message = message }, JsonRequestBehavior.AllowGet);
         }
-
-        [HttpPost]
-        public ActionResult AddUser(string userStr)
+        
+        public JsonResult AddUser(string userStr)
         {
+            bool success = false;
+            string message = "There was an error";
+
             User user = null;
 
             try
@@ -85,21 +78,34 @@ namespace TheatreUZ.Controllers
 
             if (user != null)
             {
-                try
-                {
-                    var response = repo.SaveUser(user);
+                User x = repo.GetUserByEmail(user.Email);
 
-                    Session["UserID"] = response.ID.ToString();
-                    Session["UserName"] = response.ResponseObjects.ElementAt(0) as string;
-                    Session["Role"] = (response.ResponseObjects.ElementAt(1) as Role).Name;
+                if (x == null)
+                {
+                    try
+                    {
+                        var response = repo.SaveUser(user);
+
+                        Session["User"] = user;
+                        Session["UserID"] = response.ID.ToString();
+                        Session["UserName"] = response.ResponseObjects.ElementAt(0) as string;
+                        Session["Role"] = (response.ResponseObjects.ElementAt(1) as Role).Name;
+
+                        success = true;
+                        message = "OK";
+                    }
+                    catch
+                    {
+
+                    }
                 }
-                catch
+                else
                 {
-
+                    message = "User with this e-mail is existing! Use another e-mail.";
                 }
             }
 
-            return RedirectToAction("Index", "Home");
+            return Json(new { Success = success, Message = message }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]

@@ -2,6 +2,7 @@
 using System.Web.Mvc;
 using Newtonsoft.Json;
 using TheatreUZ.Models;
+using TheatreUZ.Security;
 
 namespace TheatreUZ.Controllers
 {
@@ -28,34 +29,73 @@ namespace TheatreUZ.Controllers
 
         public ActionResult Index()
         {
-            return View(repo.GetAllNotifications());
+            if (TAuth.IsAdmin())
+            {
+                return View(repo.GetAllNotifications());
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public ActionResult GetNotification(Guid id)
         {
-            return View(repo.GetNotification(id));
+            if (TAuth.IsAdmin())
+            {
+                return View(repo.GetNotification(id));
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public ActionResult AddNotification()
         {
-            ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name");
-            ViewBag.UserID = new SelectList(repo.GetAllUsers(), "ID", "Name");
-            return View();
+            if (TAuth.IsAdmin())
+            {
+                ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name");
+                ViewBag.UserID = new SelectList(repo.GetAllUsers(), "ID", "Name");
+
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpPost]
         public ActionResult AddNotification(Notification item)
         {
-            repo.SaveNotification(item);
-            return RedirectToAction("Index");
+            if (TAuth.IsAdmin())
+            {
+                repo.SaveNotification(item);
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public ActionResult EditNotification(Guid id)
         {
-            var notification = repo.GetNotification(id);
-            ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name", notification.StateID);
-            ViewBag.UserID = new SelectList(repo.GetAllUsers(), "ID", "Name", notification.UserID);
-            return View(notification);
+            if (TAuth.IsAdmin())
+            {
+                var notification = repo.GetNotification(id);
+
+                ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name", notification.StateID);
+                ViewBag.UserID = new SelectList(repo.GetAllUsers(), "ID", "Name", notification.UserID);
+
+                return View(notification);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public ActionResult DeleteNotification(Guid id)
@@ -66,8 +106,15 @@ namespace TheatreUZ.Controllers
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteConfirmed(Guid id)
         {
-            repo.DeleteNotification(id);
-            return RedirectToAction("Index");
+            if (TAuth.IsAdmin())
+            {
+                repo.DeleteNotification(id);
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         protected override void Dispose(bool disposing)

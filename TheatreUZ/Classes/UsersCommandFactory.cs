@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TheatreUZ.Security;
 
 namespace TheatreUZ
 {
@@ -47,7 +48,7 @@ namespace TheatreUZ
                     item = command.User;
                     item.ID = Guid.NewGuid();
                     item.RegDate = DateTime.Now;
-                    item.PasswordHash = OwnSecurity.Hash(item.PasswordHash);
+                    item.PasswordHash = TAuth.Hash(item.PasswordHash);
                     item.State = db.States.Where(s => s.Name == "Active").FirstOrDefault();
                     item.StateID = db.States.Where(s => s.Name == "Active").FirstOrDefault().ID;
 

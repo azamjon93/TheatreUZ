@@ -65,7 +65,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Sales[0].State.Name)
             </th>
-            <th>Actions</th>
+            <th>Delete book</th>
         </tr>
     </thead>
 
@@ -90,7 +90,6 @@
                 </td>
                 <td>
                     <div style="display: block; float: right">
-                        @Html.ActionLink("Edit", "EditSale", new { id = item.ID }, new { @class = "btn btn-sm btn-primary" })
                         @Html.ActionLink("Delete", "DeleteSale", new { id = item.ID }, new { @class = "btn btn-sm btn-danger" })
                     </div>
                 </td>

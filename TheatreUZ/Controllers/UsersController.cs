@@ -3,6 +3,7 @@ using System.Linq;
 using System.Web.Mvc;
 using Newtonsoft.Json;
 using TheatreUZ.Models;
+using TheatreUZ.Security;
 
 namespace TheatreUZ.Controllers
 {
@@ -29,69 +30,135 @@ namespace TheatreUZ.Controllers
 
         public ActionResult Index()
         {
-            return View(repo.GetAllUsers());
+            if (TAuth.IsAdmin())
+            {
+                return View(repo.GetAllUsers());
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public ActionResult GetUser(Guid id)
         {
-            return View(repo.GetUser(id));
+            if (TAuth.IsAdmin())
+            {
+                return View(repo.GetUser(id));
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public ActionResult AddUser()
         {
-            ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name");
-            ViewBag.RoleID = new SelectList(repo.GetAllRoles(), "ID", "Name");
-            return View();
+            if (TAuth.IsAdmin())
+            {
+                ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name");
+                ViewBag.RoleID = new SelectList(repo.GetAllRoles(), "ID", "Name");
+
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpPost]
         public ActionResult AddUser(User item)
         {
-            repo.SaveUser(item);
-            return RedirectToAction("Index");
+            if (TAuth.IsAdmin())
+            {
+                repo.SaveUser(item);
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public ActionResult EditUser(Guid id)
         {
-            var user = repo.GetUser(id);
+            if (TAuth.IsAdmin())
+            {
+                var user = repo.GetUser(id);
 
-            ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name", user.StateID);
-            ViewBag.RoleID = new SelectList(repo.GetAllRoles(), "ID", "Name", user.RoleID);
+                ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name", user.StateID);
+                ViewBag.RoleID = new SelectList(repo.GetAllRoles(), "ID", "Name", user.RoleID);
 
-            return View(user);
+                return View(user);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public ActionResult DeleteUser(Guid id)
         {
-            return View(repo.GetUser(id));
+            if (TAuth.IsAdmin())
+            {
+                return View(repo.GetUser(id));
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteConfirmed(Guid id)
         {
-            repo.DeleteUser(id);
-            return RedirectToAction("Index");
+            if (TAuth.IsAdmin())
+            {
+                repo.DeleteUser(id);
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
-        public ActionResult UserAllInfo(Guid id)
+        public ActionResult UserAllInfo()
         {
-            var user = repo.GetUser(id);
-            var sales = repo.GetAllSales();
-
-            UserAllInfoModel model = new UserAllInfoModel
+            if (TAuth.IsLogged() && !TAuth.IsAdmin())
             {
-                User = user,
-                Sales = sales.Where(s => s.UserID == id && s.State.Name == "Active").ToList()
-            };
+                var user = repo.GetUser(Guid.Parse((string)Session["UserID"]));
+                var sales = repo.GetAllSales();
 
-            return View(model);
+                UserAllInfoModel model = new UserAllInfoModel
+                {
+                    User = user,
+                    Sales = sales.Where(s => s.UserID == user.ID && s.State.Name == "Active").ToList()
+                };
+
+                return View(model);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public ActionResult DeleteSale(Guid id)
         {
-            repo.DeleteSale(id);
-            var uid = (string)Session["UserID"];
-            return RedirectToAction("UserAllInfo", new { id = Guid.Parse(uid) });
+            if (TAuth.IsLogged() && !TAuth.IsAdmin())
+            {
+                repo.DeleteSale(id);
+
+                return RedirectToAction("UserAllInfo", new { id = Guid.Parse((string)Session["UserID"]) });
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
         }
 
         protected override void Dispose(bool disposing)

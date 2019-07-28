@@ -2,6 +2,7 @@
 using System.Web.Mvc;
 using Newtonsoft.Json;
 using TheatreUZ.Models;
+using TheatreUZ.Security;
 
 namespace TheatreUZ.Controllers
 {
@@ -28,41 +29,92 @@ namespace TheatreUZ.Controllers
 
         public ActionResult Index()
         {
-            return View(repo.GetAllStates());
+            if (TAuth.IsAdmin())
+            {
+                return View(repo.GetAllStates());
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public ActionResult GetState(Guid id)
         {
-            return View(repo.GetState(id));
+            if (TAuth.IsAdmin())
+            {
+                return View(repo.GetState(id));
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public ActionResult AddState()
         {
-            return View();
+            if (TAuth.IsAdmin())
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpPost]
         public ActionResult AddState(State item)
         {
-            repo.SaveState(item);
-            return RedirectToAction("Index");
+            if (TAuth.IsAdmin())
+            {
+                repo.SaveState(item);
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public ActionResult EditState(Guid id)
         {
-            return View(repo.GetState(id));
+            if (TAuth.IsAdmin())
+            {
+                return View(repo.GetState(id));
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public ActionResult DeleteState(Guid id)
         {
-            return View(repo.GetState(id));
+            if (TAuth.IsAdmin())
+            {
+                return View(repo.GetState(id));
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteConfirmed(Guid id)
         {
-            repo.DeleteState(id);
-            return RedirectToAction("Index");
+            if (TAuth.IsAdmin())
+            {
+                repo.DeleteState(id);
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         protected override void Dispose(bool disposing)

@@ -2,6 +2,7 @@
 using System.Web.Mvc;
 using Newtonsoft.Json;
 using TheatreUZ.Models;
+using TheatreUZ.Security;
 
 namespace TheatreUZ.Controllers
 {
@@ -28,36 +29,75 @@ namespace TheatreUZ.Controllers
 
         public ActionResult Index()
         {
-            return View(repo.GetAllSales());
+            if (TAuth.IsAdmin())
+            {
+                return View(repo.GetAllSales());
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public ActionResult GetSale(Guid id)
         {
-            return View(repo.GetSale(id));
+            if (TAuth.IsAdmin())
+            {
+                return View(repo.GetSale(id));
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public ActionResult AddSale()
         {
-            ViewBag.UserID = new SelectList(repo.GetAllUsers(), "ID", "Name");
-            ViewBag.SpectacleID = new SelectList(repo.GetAllSpectacles(), "ID", "Name");
-            ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name");
-            return View();
+            if (TAuth.IsAdmin())
+            {
+                ViewBag.UserID = new SelectList(repo.GetAllUsers(), "ID", "Name");
+                ViewBag.SpectacleID = new SelectList(repo.GetAllSpectacles(), "ID", "Name");
+                ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name");
+
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpPost]
         public ActionResult AddSale(Sale item)
         {
-            repo.SaveSale(item);
-            return RedirectToAction("Index");
+            if (TAuth.IsAdmin())
+            {
+                repo.SaveSale(item);
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public ActionResult EditSale(Guid id)
         {
-            var sale = repo.GetSale(id);
-            ViewBag.UserID = new SelectList(repo.GetAllUsers(), "ID", "Name", sale.UserID);
-            ViewBag.SpectacleID = new SelectList(repo.GetAllSpectacles(), "ID", "Name", sale.SpectacleID);
-            ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name", sale.StateID);
-            return View(sale);
+            if (TAuth.IsAdmin())
+            {
+                var sale = repo.GetSale(id);
+
+                ViewBag.UserID = new SelectList(repo.GetAllUsers(), "ID", "Name", sale.UserID);
+                ViewBag.SpectacleID = new SelectList(repo.GetAllSpectacles(), "ID", "Name", sale.SpectacleID);
+                ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name", sale.StateID);
+
+                return View(sale);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public ActionResult DeleteSale(Guid id)
@@ -68,8 +108,16 @@ namespace TheatreUZ.Controllers
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteConfirmed(Guid id)
         {
-            repo.DeleteSale(id);
-            return RedirectToAction("Index");
+            if (TAuth.IsAdmin())
+            {
+                repo.DeleteSale(id);
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         protected override void Dispose(bool disposing)

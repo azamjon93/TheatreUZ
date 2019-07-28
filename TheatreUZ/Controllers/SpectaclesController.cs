@@ -29,46 +29,100 @@ namespace TheatreUZ.Controllers
 
         public ActionResult Index()
         {
-            return View(repo.GetAllSpectacles());
+            if (TAuth.IsAdmin())
+            {
+                return View(repo.GetAllSpectacles());
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public ActionResult GetSpectacle(Guid id)
         {
-            return View(repo.GetSpectacle(id));
+            if (TAuth.IsAdmin())
+            {
+                return View(repo.GetSpectacle(id));
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public ActionResult AddSpectacle()
         {
-            ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name");
-            ViewBag.GenreID = new SelectList(repo.GetAllGenres(), "ID", "Name");
-            return View();
+            if (TAuth.IsAdmin())
+            {
+                ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name");
+                ViewBag.GenreID = new SelectList(repo.GetAllGenres(), "ID", "Name");
+
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpPost]
         public ActionResult AddSpectacle(Spectacle item)
         {
-            repo.SaveSpectacle(item);
-            return RedirectToAction("Index");
+            if (TAuth.IsAdmin())
+            {
+                repo.SaveSpectacle(item);
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public ActionResult EditSpectacle(Guid id)
         {
-            var spectacle = repo.GetSpectacle(id);
-            ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name", spectacle.StateID);
-            ViewBag.GenreID = new SelectList(repo.GetAllGenres(), "ID", "Name", spectacle.GenreID);
-            return View(spectacle);
+            if (TAuth.IsAdmin())
+            {
+                var spectacle = repo.GetSpectacle(id);
+
+                ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name", spectacle.StateID);
+                ViewBag.GenreID = new SelectList(repo.GetAllGenres(), "ID", "Name", spectacle.GenreID);
+
+                return View(spectacle);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public ActionResult DeleteSpectacle(Guid id)
         {
-            return View(repo.GetSpectacle(id));
+            if (TAuth.IsAdmin())
+            {
+                return View(repo.GetSpectacle(id));
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteConfirmed(Guid id)
         {
-            repo.DeleteSpectacle(id);
-            return RedirectToAction("Index");
+            if (TAuth.IsAdmin())
+            {
+                repo.DeleteSpectacle(id);
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         protected override void Dispose(bool disposing)

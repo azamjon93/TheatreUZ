@@ -1,30 +1,43 @@
-﻿using System.Web.Mvc;
-using System.Web.Mvc.Filters;
-using System.Web.Security;
+﻿using System.Security.Cryptography;
+using System.Text;
+using System.Web;
+using TheatreUZ.Models;
 
 namespace TheatreUZ.Security
 {
-    public class TAuth : FilterAttribute, IAuthenticationFilter
+    public static class TAuth
     {
-        public void OnAuthentication(AuthenticationContext filterContext)
+        public static bool IsLogged()
         {
-            var user = filterContext.HttpContext.User;
-            if (user == null || !user.Identity.IsAuthenticated)
-            {
-                filterContext.Result = new HttpUnauthorizedResult();
-            }
+            return GetUser() == null ? false : true;
         }
 
-        public void OnAuthenticationChallenge(AuthenticationChallengeContext filterContext)
+        public static bool IsAdmin()
         {
-            var user = filterContext.HttpContext.User;
-            if (user == null || !user.Identity.IsAuthenticated)
+            var user = GetUser();
+
+            return (user == null || user.Role.Name != "Admin") ? false : true;
+        }
+
+        static User GetUser()
+        {
+            User user = (User)HttpContext.Current.Session["User"];
+
+            return user;
+        }
+
+        public static string Hash(string text)
+        {
+            SHA256Managed crypt = new SHA256Managed();
+            string hash = string.Empty;
+            byte[] crypto = crypt.ComputeHash(Encoding.ASCII.GetBytes(text));
+
+            foreach (byte theByte in crypto)
             {
-                filterContext.Result = new RedirectToRouteResult(
-                    new System.Web.Routing.RouteValueDictionary {
-                    { "controller", "Home" }, { "action", "Index" }
-                   });
+                hash += theByte.ToString("x2");
             }
+
+            return hash;
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Web.Mvc;
 using Newtonsoft.Json;
 using TheatreUZ.Models;
+using TheatreUZ.Security;
 
 namespace TheatreUZ.Controllers
 {
@@ -28,18 +29,40 @@ namespace TheatreUZ.Controllers
 
         public ActionResult Index()
         {
-            return View(repo.GetAllRoles());
+            if (TAuth.IsAdmin())
+            {
+                return View(repo.GetAllRoles());
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public ActionResult GetRole(Guid id)
         {
-            return View(repo.GetRole(id));
+            if (TAuth.IsAdmin())
+            {
+                return View(repo.GetRole(id));
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public ActionResult AddRole()
         {
-            ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name");
-            return View();
+            if (TAuth.IsAdmin())
+            {
+                ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name");
+
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpPost]
@@ -51,21 +74,45 @@ namespace TheatreUZ.Controllers
 
         public ActionResult EditRole(Guid id)
         {
-            var role = repo.GetRole(id);
-            ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name", role.StateID);
-            return View(role);
+            if (TAuth.IsAdmin())
+            {
+                var role = repo.GetRole(id);
+
+                ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name", role.StateID);
+
+                return View(role);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public ActionResult DeleteRole(Guid id)
         {
-            return View(repo.GetRole(id));
+            if (TAuth.IsAdmin())
+            {
+                return View(repo.GetRole(id));
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteConfirmed(Guid id)
         {
-            repo.DeleteRole(id);
-            return RedirectToAction("Index");
+            if (TAuth.IsAdmin())
+            {
+                repo.DeleteRole(id);
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         protected override void Dispose(bool disposing)

@@ -26,48 +26,102 @@ namespace TheatreUZ.Controllers
                 return ex.Message;
             }
         }
-        
+
         public ActionResult Index()
         {
-            return View(repo.GetAllGenres());
+            if (TAuth.IsAdmin())
+            {
+                return View(repo.GetAllGenres());
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public ActionResult GetGenre(Guid id)
         {
-            return View(repo.GetGenre(id));
+            if (TAuth.IsAdmin())
+            {
+                return View(repo.GetGenre(id));
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public ActionResult AddGenre()
         {
-            ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name");
-            return View();
+            if (TAuth.IsAdmin())
+            {
+                ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name");
+
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpPost]
         public ActionResult AddGenre(Genre item)
         {
-            repo.SaveGenre(item);
-            return RedirectToAction("Index");
+            if (TAuth.IsAdmin())
+            {
+                repo.SaveGenre(item);
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public ActionResult EditGenre(Guid id)
         {
-            var genre = repo.GetGenre(id);
-            ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name", genre.StateID);
-            ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name", genre.StateID);
-            return View(genre);
+            if (TAuth.IsAdmin())
+            {
+                var genre = repo.GetGenre(id);
+
+                ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name", genre.StateID);
+                ViewBag.StateID = new SelectList(repo.GetAllStates(), "ID", "Name", genre.StateID);
+
+                return View(genre);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public ActionResult DeleteGenre(Guid id)
         {
-            return View(repo.GetGenre(id));
+            if (TAuth.IsAdmin())
+            {
+                return View(repo.GetGenre(id));
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteConfirmed(Guid id)
         {
-            repo.DeleteGenre(id);
-            return RedirectToAction("Index");
+            if (TAuth.IsAdmin())
+            {
+                repo.DeleteGenre(id);
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         protected override void Dispose(bool disposing)
